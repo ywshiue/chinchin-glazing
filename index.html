@@ -353,11 +353,12 @@ function render(){
   rUse();
   const pb=document.getElementById('nb-pending');
   pb.innerHTML=G.S.pending.length?`待補料 <span class="cnt">${G.S.pending.length}</span>`:'待補料';
-  if(G.AT==='pending')rPending();
-  if(G.AT==='dashboard')rDash();
-  if(G.AT==='inventory')rInv();
-  if(G.AT==='recipes')rRec();
-  if(G.AT==='history')rHist();
+  // 永遠渲染所有 tab，確保切換過去時資料已就緒
+  rPending();
+  rDash();
+  rInv();
+  rRec();
+  rHist();
 }
 
 function rUse(){
