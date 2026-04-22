@@ -589,7 +589,7 @@ function rInv(){
         </div>`;}).join('')}
       ${!mats.length?'<div class="empty">此分類無原料</div>':''}
     </div>`;
-  document.getElementById('amb').onclick=oAddMat;
+  const ambBtn=document.getElementById('amb');if(ambBtn)ambBtn.onclick=oAddMat;
 }
 
 function rRec(){
@@ -622,9 +622,9 @@ function rRec(){
         <div style="font-size:10px;color:${Math.abs(tot-100)>1?'var(--red)':'var(--ink3)'};margin-top:6px;font-family:'DM Mono',monospace">總計 ${tot.toFixed(1)}%</div>
       </div>`;}).join('')}
     </div>${!recs.length?'<div class="empty">無符合條件的配方</div>':''}`;
-  document.getElementById('arb').onclick=oAddRec;
+  const arbBtn=document.getElementById('arb');if(arbBtn)arbBtn.onclick=oAddRec;
   ['all','電窯','瓦斯窯'].forEach(v=>{const b=document.getElementById('rf-'+v);if(b)b.onclick=()=>{G.RF=v;rRec();};});
-  document.getElementById('rsch').oninput=function(){G.RS=this.value;rRec();};
+  const rschEl=document.getElementById('rsch');if(rschEl)rschEl.oninput=function(){G.RS=this.value;rRec();};
   recs.forEach(r=>{const el=document.getElementById('rc-'+r.id);if(el)el.onclick=()=>oRecDet(r.id);});
 }
 
