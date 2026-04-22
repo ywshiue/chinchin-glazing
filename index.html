@@ -320,21 +320,36 @@ function setSyncDot(state){
   d.className='sync-dot'+(state==='saving'?' saving':state==='err'?' err':'');
   d.title=state==='saving'?'儲存中…':state==='err'?'儲存失敗':'已同步';
 }
+const LC_KEY='glaze_local_cache';
+function lcSave(data){try{localStorage.setItem(LC_KEY,JSON.stringify(data));}catch(e){}}
+function lcLoad(){try{const s=localStorage.getItem(LC_KEY);return s?JSON.parse(s):null;}catch(e){return null;}}
+function applyData(data){
+  data.materials.forEach(m=>{if(m.tracked===undefined)m.tracked=false;});
+  G.S={materials:data.materials,recipes:data.recipes||[],log:data.log||[],pending:data.pending||[]};
+}
 async function load(){
+  // 先讀本地快取，有就立刻顯示（幾乎零延遲）
+  const cached=lcLoad();
+  if(cached&&cached.materials&&cached.materials.length){
+    applyData(cached);
+    render();
+    setSyncDot('saving');
+  }
+  // 背景去 Supabase 取最新資料
   try{
     const data=await sbGet();
     if(data&&data.materials&&data.materials.length){
-      data.materials.forEach(m=>{if(m.tracked===undefined)m.tracked=false;});
-      G.S={materials:data.materials,recipes:data.recipes||[],log:data.log||[],pending:data.pending||[]};
+      applyData(data);
+      lcSave(data);
     } else {
       G.S.materials=SM.map(m=>({...m}));
       G.S.recipes=SR.map(r=>({id:r.id,name:r.name,kiln:r.k,color:r.c,note:'',ingredients:r.i.map(x=>({materialId:x[0],pct:x[1]}))}));
       await sbSet(G.S);
+      lcSave(G.S);
     }
+    setSyncDot('ok');
   }catch(e){
-    setSyncDot('err');
-    G.S.materials=SM.map(m=>({...m}));
-    G.S.recipes=SR.map(r=>({id:r.id,name:r.name,kiln:r.k,color:r.c,note:'',ingredients:r.i.map(x=>({materialId:x[0],pct:x[1]}))}));
+    setSyncDot(cached?'ok':'err');
   }
   render();
 }
@@ -342,7 +357,7 @@ function save(){
   setSyncDot('saving');
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async()=>{
-    try{await sbSet(G.S);setSyncDot('ok');}
+    try{await sbSet(G.S);lcSave(G.S);setSyncDot('ok');}
     catch(e){setSyncDot('err');}
     render();
   },600);
