@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>青青土氣｜釉藥管理系統</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1814;--ink2:#4a453e;--ink3:#9a9088;
+  --paper:#faf8f4;--paper2:#f2ede4;--paper3:#e8e0d0;
+  --line:rgba(26,24,20,0.12);--line2:rgba(26,24,20,0.06);
+  --clay:#c4784a;--sage:#5a7a5a;--sage-light:#eaf0e8;
+  --amber:#b8860b;--amber-light:#fdf6e3;
+  --red:#a03030;--red-light:#fceaea;
+  --r:8px;--r2:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--paper);font-size:14px;line-height:1.5}
+.app{max-width:780px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.hdr{display:flex;align-items:baseline;gap:16px;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--line)}
+.hdr-t{font-family:'DM Serif Display',serif;font-size:26px;letter-spacing:-0.02em}
+.hdr-s{font-size:12px;color:var(--ink3);letter-spacing:0.06em;text-transform:uppercase}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--sage);display:inline-block;margin-left:auto;flex-shrink:0}
+.sync-dot.saving{background:var(--amber);animation:pulse .8s infinite}
+.sync-dot.err{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.nav{display:flex;gap:6px;margin-bottom:1.75rem;flex-wrap:wrap}
+.nb{padding:7px 16px;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink2);font-family:'DM Sans',sans-serif;transition:all .15s}
+.nb:hover{border-color:var(--ink3);color:var(--ink)}
+.nb.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.cnt{display:inline-block;background:var(--clay);color:#fff;border-radius:100px;font-size:10px;padding:1px 6px;margin-left:4px;font-weight:500}
+.tab{display:none}.tab.on{display:block}
+.ss{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.sc{background:var(--paper2);border:1px solid var(--line2);border-radius:var(--r2);padding:14px 16px}
+.sn{font-family:'DM Serif Display',serif;font-size:28px;line-height:1;margin-bottom:4px}
+.sl{font-size:11px;color:var(--ink3);letter-spacing:.04em;text-transform:uppercase}
+.lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:500;margin-bottom:10px}
+.card{background:#fff;border:1px solid var(--line2);border-radius:var(--r2);padding:16px 18px;margin-bottom:10px}
+.csm{padding:12px 16px}
+.rid{font-family:'DM Mono',monospace;font-size:10px;background:var(--paper2);border:1px solid var(--line);border-radius:4px;padding:2px 7px;color:var(--ink3);flex-shrink:0}
+.bdg{display:inline-flex;align-items:center;font-size:11px;padding:3px 9px;border-radius:100px;font-weight:500}
+.bok{background:var(--sage-light);color:var(--sage)}
+.blw{background:var(--amber-light);color:var(--amber)}
+.bot{background:var(--red-light);color:var(--red)}
+.bne{background:var(--paper2);color:var(--ink3)}
+.bar{border-radius:var(--r);padding:11px 14px;margin-bottom:12px;font-size:13px;border:1px solid}
+.bok2{background:var(--sage-light);color:var(--sage);border-color:rgba(90,122,90,.2)}
+.bwn{background:var(--amber-light);color:var(--amber);border-color:rgba(184,134,11,.2)}
+.ber{background:var(--red-light);color:var(--red);border-color:rgba(160,48,48,.2)}
+input[type=text],input[type=number],select{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:var(--ink);font-size:14px;font-family:'DM Sans',sans-serif;-webkit-appearance:none;height:42px}
+input:focus,select:focus{outline:none;border-color:var(--ink3)}
+label{font-size:12px;color:var(--ink3);display:block;margin-bottom:5px}
+.fld{margin-bottom:14px}
+.btn{padding:9px 18px;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink2);font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
+.btn:hover{border-color:var(--ink3);color:var(--ink)}
+.bdk{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.bdk:hover{background:var(--ink2)}
+.bcl{background:var(--clay);color:#fff;border-color:var(--clay)}
+.bcl:hover{opacity:.88}
+.bsg{background:var(--sage);color:#fff;border-color:var(--sage)}
+.bwarn{color:var(--amber);border-color:rgba(184,134,11,.35)}
+.bwarn:hover{background:var(--amber-light)}
+.bdan{color:var(--red);border-color:rgba(160,48,48,.3)}
+.bdan:hover{background:var(--red-light)}
+.bsm{padding:5px 13px;font-size:12px}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.fe{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.uh{background:var(--paper2);border:1px solid var(--line2);border-radius:var(--r2);padding:18px 20px;margin-bottom:1.25rem}
+.ut{display:table;width:calc(100% + 28px);margin:0 -14px;border-collapse:separate;border-spacing:14px 0}
+.uc{display:table-cell;vertical-align:top}
+.ucg{width:210px}
+.gw{display:flex;height:42px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff}
+.gw:focus-within{border-color:var(--ink3)}
+.gs{width:40px;flex-shrink:0;border:none;background:transparent;cursor:pointer;font-size:18px;color:var(--ink3);display:flex;align-items:center;justify-content:center}
+.gs:hover{background:var(--paper2);color:var(--ink)}
+.gi{border:none!important;border-radius:0!important;height:100%;font-size:20px!important;font-family:'DM Serif Display',serif;text-align:center;flex:1;min-width:0;padding:0!important;background:transparent;color:var(--ink);-webkit-appearance:none}
+.gi:focus{outline:none}
+.gu{font-size:12px;color:var(--ink3);padding:0 10px 0 2px;display:flex;align-items:center;flex-shrink:0}
+.qg{display:flex;gap:6px;margin-top:7px}
+.qb{flex:1;padding:5px 0;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:12px;color:var(--ink3);font-family:'DM Sans',sans-serif;text-align:center;transition:all .12s}
+.qb:hover,.qb.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.mr{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--r);margin-bottom:5px;border:1px solid transparent;background:var(--paper2);cursor:pointer}
+.mr:hover{border-color:var(--line)}
+.mr.ck{background:var(--sage-light);border-color:rgba(90,122,90,.2)}
+.mr.ins{background:var(--red-light);border-color:rgba(160,48,48,.12)}
+.mr.ins.ck{background:var(--amber-light);border-color:rgba(184,134,11,.2)}
+.chk{width:20px;height:20px;border:1.5px solid var(--line);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff}
+.mr.ck .chk{background:var(--sage);border-color:var(--sage)}
+.mr.ck .chk::after{content:'✓';font-size:11px;color:#fff;font-weight:700;line-height:1}
+.mn{font-size:13px;flex:1}
+.mp{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink3);width:36px;text-align:right}
+.mnd{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;width:52px;text-align:right}
+.mr.ins .mnd{color:var(--red)}
+.pc{background:var(--amber-light);border:1px solid rgba(184,134,11,.25);border-radius:var(--r2);padding:14px 16px;margin-bottom:8px}
+.mt{display:inline-block;font-size:11px;padding:2px 9px;border-radius:100px;background:#fff;color:var(--amber);border:1px solid rgba(184,134,11,.3);margin:2px}
+.upc{background:var(--amber-light);border:1px solid rgba(184,134,11,.25);border-radius:var(--r2);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.fb{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.ff{padding:5px 14px;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:12px;color:var(--ink3);font-family:'DM Sans',sans-serif;transition:all .12s}
+.ff:hover{border-color:var(--ink3);color:var(--ink)}
+.ff.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.ir{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line2);gap:8px}
+.ir:last-child{border-bottom:none}
+.bt{height:3px;background:var(--paper3);border-radius:2px;margin-top:4px;overflow:hidden;width:70px}
+.bf{height:100%;border-radius:2px;background:var(--sage)}
+.bf.lw{background:var(--amber)}
+.bf.ot{background:var(--red)}
+.tp{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:11px;cursor:pointer;border:1px solid;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.tp.uns{background:var(--paper2);color:var(--ink3);border-color:var(--line)}
+.tp.uns:hover{border-color:var(--sage);color:var(--sage)}
+.tp.trk{background:var(--sage-light);color:var(--sage);border-color:rgba(90,122,90,.3)}
+.tp.trk:hover{background:var(--red-light);color:var(--red);border-color:rgba(160,48,48,.3)}
+.tpd{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.ib{width:26px;height:26px;border-radius:6px;border:1px solid var(--line);background:transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .12s;flex-shrink:0;padding:0;color:var(--ink3)}
+.ib:hover{border-color:var(--ink3);background:var(--paper2);color:var(--ink)}
+.ib.sg:hover{border-color:var(--sage);background:var(--sage-light);color:var(--sage)}
+.ib.dn:hover{border-color:var(--red);background:var(--red-light);color:var(--red)}
+.ib svg{width:13px;height:13px;display:block;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.rc{background:#fff;border:1px solid var(--line2);border-radius:var(--r2);padding:14px 16px;cursor:pointer;transition:all .15s}
+.rc:hover{border-color:var(--line);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.ri{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
+.rn{color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:72%}
+.pt{height:3px;background:var(--paper2);border-radius:2px;margin-top:2px;overflow:hidden}
+.pf{height:100%;background:var(--paper3);border-radius:2px}
+.lr{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line2)}
+.lr:last-child{border-bottom:none}
+.lt{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.ltg{font-size:10px;padding:2px 8px;border-radius:100px;background:var(--paper2);color:var(--ink3);font-family:'DM Mono',monospace}
+.ld{font-size:11px;color:var(--ink3);flex-shrink:0;margin-left:12px;font-family:'DM Mono',monospace}
+.mb{position:fixed;inset:0;background:rgba(26,24,20,.5);z-index:200;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;backdrop-filter:blur(2px)}
+.md{background:var(--paper);border-radius:var(--r2);padding:24px;width:520px;max-height:88vh;overflow-y:auto;border:1px solid var(--line)}
+.mt2{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:1.25rem}
+.ingr{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.empty{text-align:center;padding:3rem 1rem;color:var(--ink3);font-size:14px}
+.loading{text-align:center;padding:4rem 1rem;color:var(--ink3);font-size:15px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <span class="hdr-t">青青土氣</span>
+    <span class="hdr-s">釉藥管理系統</span>
+    <span class="sync-dot" id="sdot" title="已同步"></span>
+  </div>
+  <div class="nav">
+    <button class="nb on" id="nb-use">調配釉藥</button>
+    <button class="nb" id="nb-pending">待補料</button>
+    <button class="nb" id="nb-dashboard">總覽</button>
+    <button class="nb" id="nb-inventory">原料庫存</button>
+    <button class="nb" id="nb-recipes">配方</button>
+    <button class="nb" id="nb-history">記錄</button>
+  </div>
+  <div id="t-use" class="tab on"><div class="loading">載入中…</div></div>
+  <div id="t-pending" class="tab"></div>
+  <div id="t-dashboard" class="tab"></div>
+  <div id="t-inventory" class="tab"></div>
+  <div id="t-recipes" class="tab"></div>
+  <div id="t-history" class="tab"></div>
+</div>
+<div id="modal"></div>
+
+<script>
+// ── Supabase 設定 ──
+const SB_URL='https://ymmummpbqayoieigbwav.supabase.co';
+const SB_KEY='sb_publishable_XXrePPoXe5aeK8LMASF4EA_q25badCz';
+
+async function sbGet(){
+  const r=await fetch(`${SB_URL}/rest/v1/glaze_state?id=eq.main&select=data`,{
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+  });
+  const d=await r.json();
+  return d&&d[0]?d[0].data:null;
+}
+async function sbSet(data){
+  await fetch(`${SB_URL}/rest/v1/glaze_state?id=eq.main`,{
+    method:'PATCH',
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify({data,updated_at:new Date().toISOString()})
+  });
+}
+
+// ── SVG icons ──
+const I={
+  in:`<svg viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>`,
+  ed:`<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  tr:`<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>`,
+};
+
+const TABS=['use','pending','dashboard','inventory','recipes','history'];
+const G={
+  S:{materials:[],recipes:[],log:[],pending:[]},
+  US:{rid:'',g:3000,user:'',note:'',ck:{}},
+  AT:'use',IF:'all',RF:'all',RS:''
+};
+let saveTimer=null;
+
+// ── seed data ──
+const SM=[
+  {id:'霞正長石',name:'霞正長石',qty:0,tracked:false,unit:'g',minQty:500,note:''},{id:'鈉長石',name:'鈉長石',qty:0,tracked:false,unit:'g',minQty:500,note:''},
+  {id:'日化長石',name:'日化長石',qty:0,tracked:false,unit:'g',minQty:500,note:''},{id:'印度鉀長石',name:'印度鉀長石',qty:0,tracked:false,unit:'g',minQty:500,note:''},
+  {id:'鉀長石',name:'鉀長石',qty:0,tracked:false,unit:'g',minQty:500,note:''},{id:'霞石正長石',name:'霞石正長石',qty:0,tracked:false,unit:'g',minQty:500,note:''},
+  {id:'熔塊',name:'熔塊',qty:0,tracked:false,unit:'g',minQty:500,note:''},{id:'石英',name:'石英',qty:0,tracked:false,unit:'g',minQty:500,note:''},
+  {id:'高嶺土',name:'高嶺土',qty:0,tracked:false,unit:'g',minQty:500,note:''},{id:'碳酸鈣',name:'碳酸鈣',qty:0,tracked:false,unit:'g',minQty:500,note:''},
+  {id:'碳酸鎂',name:'碳酸鎂',qty:0,tracked:false,unit:'g',minQty:200,note:''},{id:'碳酸鋇',name:'碳酸鋇',qty:0,tracked:false,unit:'g',minQty:200,note:''},
+  {id:'碳酸鋰',name:'碳酸鋰',qty:0,tracked:false,unit:'g',minQty:200,note:''},{id:'碳酸鍶',name:'碳酸鍶',qty:0,tracked:false,unit:'g',minQty:200,note:''},
+  {id:'碳酸銅',name:'碳酸銅',qty:0,tracked:false,unit:'g',minQty:100,note:''},{id:'碳酸鈷',name:'碳酸鈷',qty:0,tracked:false,unit:'g',minQty:50,note:''},
+  {id:'滑石',name:'滑石',qty:0,tracked:false,unit:'g',minQty:300,note:''},{id:'白雲石',name:'白雲石',qty:0,tracked:false,unit:'g',minQty:300,note:''},
+  {id:'矽灰石',name:'矽灰石',qty:0,tracked:false,unit:'g',minQty:300,note:''},{id:'骨灰',name:'骨灰',qty:0,tracked:false,unit:'g',minQty:200,note:''},
+  {id:'鋰輝石',name:'鋰輝石',qty:0,tracked:false,unit:'g',minQty:200,note:''},{id:'皂土',name:'皂土',qty:0,tracked:false,unit:'g',minQty:100,note:''},
+  {id:'球土',name:'球土',qty:0,tracked:false,unit:'g',minQty:300,note:''},{id:'矽酸鋯',name:'矽酸鋯',qty:0,tracked:false,unit:'g',minQty:200,note:''},
+  {id:'二氧化鈦',name:'二氧化鈦',qty:0,tracked:false,unit:'g',minQty:100,note:''},{id:'氧化鈦',name:'氧化鈦',qty:0,tracked:false,unit:'g',minQty:100,note:''},
+  {id:'氧化鋅',name:'氧化鋅',qty:0,tracked:false,unit:'g',minQty:200,note:''},{id:'氧化錫',name:'氧化錫',qty:0,tracked:false,unit:'g',minQty:100,note:''},
+  {id:'氧化鈷',name:'氧化鈷',qty:0,tracked:false,unit:'g',minQty:50,note:''},{id:'氧化鎳',name:'氧化鎳',qty:0,tracked:false,unit:'g',minQty:50,note:''},
+  {id:'氧化銅',name:'氧化銅',qty:0,tracked:false,unit:'g',minQty:50,note:''},{id:'氧化錳',name:'氧化錳',qty:0,tracked:false,unit:'g',minQty:100,note:''},
+  {id:'氧化鉻',name:'氧化鉻',qty:0,tracked:false,unit:'g',minQty:50,note:''},{id:'氧化鎂',name:'氧化鎂',qty:0,tracked:false,unit:'g',minQty:100,note:''},
+  {id:'紅氧化鐵',name:'紅氧化鐵',qty:0,tracked:false,unit:'g',minQty:200,note:''},{id:'黑氧化鐵',name:'黑氧化鐵',qty:0,tracked:false,unit:'g',minQty:100,note:''},
+  {id:'氧化鐵',name:'氧化鐵',qty:0,tracked:false,unit:'g',minQty:100,note:''},{id:'金紅石',name:'金紅石',qty:2892.8,tracked:true,unit:'g',minQty:200,note:''},
+  {id:'高硼釉',name:'高硼釉',qty:0,tracked:false,unit:'g',minQty:200,note:''},{id:'CG435',name:'CG435',qty:0,tracked:false,unit:'g',minQty:200,note:''},
+  {id:'灰',name:'灰',qty:0,tracked:false,unit:'g',minQty:200,note:''},{id:'球士',name:'球士',qty:0,tracked:false,unit:'g',minQty:200,note:''},
+  {id:'高嶺士',name:'高嶺士',qty:0,tracked:false,unit:'g',minQty:200,note:''},{id:'陶石',name:'陶石',qty:0,tracked:false,unit:'g',minQty:200,note:''},
+  {id:'紅鐵',name:'紅鐵',qty:0,tracked:false,unit:'g',minQty:100,note:''},{id:'美國硬硼酸鈣',name:'美國硬硼酸鈣',qty:0,tracked:false,unit:'g',minQty:100,note:''},
+];
+const SR=[
+  {id:'X0Y0',name:'亮面透明釉',k:'電窯',c:'#c8c0b0',i:[['日化長石',52],['碳酸鈣',18],['氧化鋅',10],['白雲石',5],['高嶺土',10],['石英',15]]},
+  {id:'X0Y1',name:'霧面透明釉',k:'電窯',c:'#d8d0c0',i:[['印度鉀長石',31.5],['高嶺土',18.4],['石英',22.5],['碳酸鎂',5.7],['碳酸鈣',22]]},
+  {id:'X0Y2',name:'蛋白',k:'電窯',c:'#f2e8c8',i:[['霞正長石',43.25],['鈉長石',9.2],['高嶺土',10],['二氧化鈦',5.75],['碳酸鈣',20],['氧化錫',5.15],['滑石',8.65],['碳酸鎂',0.3]]},
+  {id:'X0Y3',name:'霧黃',k:'電窯',c:'#c8a830',i:[['印度鉀長石',33],['滑石',21],['碳酸鈣',12],['高嶺土',15],['石英',16],['氧化鋅',3],['氧化鎳',3],['二氧化鈦',10]]},
+  {id:'X0Y4',name:'粉紅',k:'電窯',c:'#d88898',i:[['印度鉀長石',55],['碳酸鈣',16],['滑石',13],['高嶺土',16],['氧化錳',3.35]]},
+  {id:'X0Y5',name:'粉綠',k:'電窯',c:'#88b880',i:[['印度鉀長石',34],['碳酸鈣',9.6],['滑石',16.8],['碳酸鋇',7.6],['碳酸鋰',0.6],['氧化鋅',2.4],['高嶺土',13],['石英',16],['二氧化鈦',8],['氧化鎳',2.4],['氧化鈷',0.02],['氧化銅',0.1]]},
+  {id:'X0Y6',name:'粉藍 1B4-27',k:'電窯',c:'#88a8c8',i:[['霞正長石',53],['碳酸鈣',17],['氧化鈦',5],['氧化錫',4],['高嶺土',7],['石英',14],['氧化鈷',0.33],['碳酸銅',2.65]]},
+  {id:'X0Y7',name:'藍綠斑點 1E6-1',k:'電窯',c:'#408090',i:[['霞正長石',40],['碳酸鈣',9],['碳酸鍶',24],['高嶺土',12],['石英',18],['碳酸銅',3]]},
+  {id:'X0Y8',name:'粉紫 1D6-3',k:'電窯',c:'#a888b8',i:[['印度鉀長石',36],['鋰輝石',23],['碳酸鈣',5],['白雲石',18],['高嶺土',18],['氧化錳',2],['氧化鈷',2]]},
+  {id:'X0Y9',name:'粉橘 1B4-10',k:'電窯',c:'#c89060',i:[['霞正長石',53],['碳酸鈣',17],['氧化鈦',5],['氧化錫',4],['高嶺土',7],['石英',14],['紅氧化鐵',5.3]]},
+  {id:'X0Y10',name:'深紅 1B8-21',k:'電窯',c:'#902828',i:[['印度鉀長石',55.5],['碳酸鈣',19.16],['熔塊',12],['高嶺土',13.33],['氧化錳',8]]},
+  {id:'X0Y11',name:'深藍 1C4-16',k:'電窯',c:'#203070',i:[['印度鉀長石',55],['碳酸鈣',16],['滑石',13],['高嶺土',16],['氧化鈷',0.33],['氧化鉻',0.6]]},
+  {id:'X0Y12',name:'墨綠 1E6-18',k:'電窯',c:'#204820',i:[['霞正長石',40],['碳酸鈣',9],['碳酸鍶',6],['碳酸鋰',2],['高嶺土',12],['石英',18],['碳酸銅',3]]},
+  {id:'X0Y13',name:'深棕',k:'電窯',c:'#704028',i:[['霞正長石',52.5],['碳酸鈣',15.75],['高嶺土',5.25],['石英',15.75],['骨灰',9],['碳酸鋇',7.5],['碳酸銅',7.5],['紅氧化鐵',10]]},
+  {id:'X0Y14',name:'淺灰 1B4-20',k:'電窯',c:'#a8a8a0',i:[['霞正長石',53],['碳酸鈣',17],['氧化鈦',5],['氧化錫',4],['高嶺土',7],['石英',14],['氧化錳',3.35],['氧化鈷',0.33]]},
+  {id:'X0Y15',name:'金屬黑',k:'電窯',c:'#202020',i:[['霞正長石',30],['石英',5],['碳酸鈣',15],['氧化鎂',2],['氧化錫',2.5],['氧化銅',5],['滑石',5],['金紅石',3],['CG435',33.3]]},
+  {id:'X1Y0',name:'冷白 1B2b-3',k:'電窯',c:'#e0e8f0',i:[['鈉長石',25],['熔塊',38],['碳酸鈣',12],['高嶺土',6],['石英',19],['氧化鋅',6]]},
+  {id:'X2Y0',name:'亮白',k:'電窯',c:'#f0f0e8',i:[['印度鉀長石',53],['高嶺土',7],['石英',20],['碳酸鈣',15],['滑石',3],['氧化鈦',7],['皂土',0.33]]},
+  {id:'X3Y0',name:'結晶白綠',k:'電窯',c:'#b0d0a8',i:[['印度鉀長石',34.9],['高嶺土',4.1],['碳酸鈣',12.6],['氧化鋅',25.8],['石英',22.6],['金紅石',6.5],['皂土',0.2]]},
+  {id:'X4Y0',name:'亮橘 1F2b-7',k:'電窯',c:'#c86020',i:[['鈉長石',25],['熔塊',38],['碳酸鈣',12],['高嶺土',6],['石英',19],['金紅石',14]]},
+  {id:'X5Y0',name:'粉紅 1E2b-7',k:'電窯',c:'#d898a8',i:[['鈉長石',25],['熔塊',38],['碳酸鈣',12],['高嶺土',6],['石英',19],['氧化錫',14]]},
+  {id:'X6Y0',name:'亮紫 1F1-8',k:'電窯',c:'#7848a0',i:[['印度鉀長石',42],['白雲石',22],['碳酸鈣',3],['氧化鋅',5],['高嶺土',4],['皂土',2],['石英',22],['氧化鈷',0.75],['氧化錫',2]]},
+  {id:'X7Y0',name:'淺藍 1A2b-10',k:'電窯',c:'#78a8c8',i:[['鈉長石',25],['熔塊',38],['碳酸鈣',12],['高嶺土',6],['石英',19],['碳酸銅',5]]},
+  {id:'X8Y0',name:'淺綠 1F8-27',k:'電窯',c:'#78b078',i:[['印度鉀長石',49.12],['碳酸鈣',13.89],['氧化鋅',18.85],['高嶺土',6.04],['石英',12.08],['碳酸銅',4]]},
+  {id:'X9Y0',name:'藍灰 1C6-4',k:'電窯',c:'#607080',i:[['霞正長石',30],['熔塊',42],['高嶺土',20],['石英',14],['紅氧化鐵',2],['碳酸鈷',1.5],['金紅石',4.5]]},
+  {id:'X10Y0',name:'亮藍 1F4-16',k:'電窯',c:'#3070b0',i:[['熔塊',37],['矽灰石',6],['滑石',8],['高嶺土',24],['石英',25],['氧化鉻',0.65],['氧化鈷',0.33]]},
+  {id:'X11Y0',name:'淺棕 1B6-14',k:'電窯',c:'#987050',i:[['印度鉀長石',40],['熔塊',9],['碳酸鈣',16],['滑石',13.5],['高嶺土',10],['石英',16],['紅氧化鐵',10]]},
+  {id:'X12Y0',name:'深紅 1C8-18',k:'電窯',c:'#781818',i:[['霞正長石',19.6],['白雲石',17.15],['滑石',8.57],['骨灰',9.2],['高硼釉',6.72],['高嶺土',16.25],['石英',22.5],['紅氧化鐵',11]]},
+  {id:'X13Y0',name:'深藍 1C6-8',k:'電窯',c:'#182860',i:[['霞正長石',30],['熔塊',36],['高嶺土',20],['石英',14],['紅氧化鐵',2],['碳酸鈷',1.5],['金紅石',3]]},
+  {id:'X14Y0',name:'深棕 1B6-8',k:'電窯',c:'#503018',i:[['印度鉀長石',40],['熔塊',9],['碳酸鈣',16],['高嶺土',10],['石英',16],['滑石',9],['紅氧化鐵',15]]},
+  {id:'X15Y0',name:'亮黑',k:'電窯',c:'#282828',i:[['霞正長石',35],['碳酸鈣',10.5],['高嶺土',3.5],['石英',10.5],['骨灰',6],['碳酸鋇',5],['氧化鈷',0.7],['氧化鎳',1.4],['紅氧化鐵',1.4],['氧化鉻',0.7]]},
+  {id:'GAS1',name:'吸炭志野',k:'瓦斯窯',c:'#c0a878',i:[['霞正長石',45],['灰',19],['球士',15],['鈉長石',11],['高嶺士',10],['氧化鐵',1]]},
+  {id:'GAS2',name:'Todd青瓷',k:'瓦斯窯',c:'#78a888',i:[['陶石',46],['碳酸鈣',34],['高嶺土',20]]},
+  {id:'GAS3',name:'1208t1 白白',k:'瓦斯窯',c:'#e8e0d0',i:[['鉀長石',25],['霞石正長石',12],['高嶺土',25],['白雲石',25],['石英',7],['碳酸鈣',4],['美國硬硼酸鈣',2]]},
+  {id:'GAS4',name:'1208t3 芒果白',k:'瓦斯窯',c:'#d0b870',i:[['鉀長石',49.19],['碳酸鈣',25.95],['球土',21.62],['高嶺土',3.24],['矽酸鋯',12.97],['二氧化鈦',4.86],['氧化鋅',4.86]]},
+  {id:'GAS5',name:'C2 青瓷',k:'瓦斯窯',c:'#80b090',i:[['鉀長石',44],['石英',20],['白雲石',4],['矽灰石',20],['高嶺土',12],['紅鐵',2]]},
+];
+
+// ── nav ──
+TABS.forEach(t=>{
+  document.getElementById('nb-'+t).addEventListener('click',()=>{
+    G.AT=t;
+    TABS.forEach(x=>{
+      document.getElementById('nb-'+x).classList.toggle('on',x===t);
+      document.getElementById('t-'+x).classList.toggle('on',x===t);
+    });
+    render();
+  });
+});
+
+// ── 事件委派（容器永遠存在，不怕 innerHTML 替換）──
+document.getElementById('t-pending').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-act]');if(!btn)return;
+  const act=btn.dataset.act,pid=btn.dataset.pid;
+  if(act==='del'){
+    if(!confirm('確定移除這筆待補料？'))return;
+    G.S.pending=G.S.pending.filter(p=>p.id!==pid);save();
+  } else if(act==='go'){
+    const p=G.S.pending.find(x=>x.id===pid);
+    if(p){G.US={rid:p.recipeId,g:p.totalGrams,user:p.user||'',note:p.note||'',ck:{}};goTab('use');}
+  }
+});
+document.getElementById('t-inventory').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-act]');
+  if(btn){
+    const act=btn.dataset.act,mid=btn.dataset.mid;
+    if(act==='tp'){const m=G.S.materials.find(x=>x.id===mid);if(m){m.tracked=!m.tracked;save();}}
+    else if(act==='adj')oAdj(mid);
+    else if(act==='edit')oEditMat(mid);
+    else if(act==='del'){const m=G.S.materials.find(x=>x.id===mid);if(m&&confirm('確定刪除「'+m.name+'」？')){G.S.materials=G.S.materials.filter(x=>x.id!==mid);save();}}
+  }
+  const ff=e.target.closest('[data-ff]');
+  if(ff){G.IF=ff.dataset.ff;rInv();}
+});
+document.getElementById('t-use').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-act]');if(!btn)return;
+  if(btn.dataset.act==='pgo'){
+    const p=G.S.pending.find(x=>x.id===btn.dataset.pid);
+    if(p){G.US={rid:p.recipeId,g:p.totalGrams,user:p.user||'',note:p.note||'',ck:{}};rUse();}
+  }
+});
+
+function goTab(t){
+  G.AT=t;
+  TABS.forEach(x=>{
+    document.getElementById('nb-'+x).classList.toggle('on',x===t);
+    document.getElementById('t-'+x).classList.toggle('on',x===t);
+  });
+  render();
+}
+
+// ── storage ──
+function setSyncDot(state){
+  const d=document.getElementById('sdot');
+  d.className='sync-dot'+(state==='saving'?' saving':state==='err'?' err':'');
+  d.title=state==='saving'?'儲存中…':state==='err'?'儲存失敗':'已同步';
+}
+async function load(){
+  try{
+    const data=await sbGet();
+    if(data&&data.materials&&data.materials.length){
+      data.materials.forEach(m=>{if(m.tracked===undefined)m.tracked=false;});
+      G.S={materials:data.materials,recipes:data.recipes||[],log:data.log||[],pending:data.pending||[]};
+    } else {
+      G.S.materials=SM.map(m=>({...m}));
+      G.S.recipes=SR.map(r=>({id:r.id,name:r.name,kiln:r.k,color:r.c,note:'',ingredients:r.i.map(x=>({materialId:x[0],pct:x[1]}))}));
+      await sbSet(G.S);
+    }
+  }catch(e){
+    setSyncDot('err');
+    G.S.materials=SM.map(m=>({...m}));
+    G.S.recipes=SR.map(r=>({id:r.id,name:r.name,kiln:r.k,color:r.c,note:'',ingredients:r.i.map(x=>({materialId:x[0],pct:x[1]}))}));
+  }
+  render();
+}
+function save(){
+  setSyncDot('saving');
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    try{await sbSet(G.S);setSyncDot('ok');}
+    catch(e){setSyncDot('err');}
+    render();
+  },600);
+}
+
+// ── render ──
+function render(){
+  rUse();
+  const pb=document.getElementById('nb-pending');
+  pb.innerHTML=G.S.pending.length?`待補料 <span class="cnt">${G.S.pending.length}</span>`:'待補料';
+  if(G.AT==='pending')rPending();
+  if(G.AT==='dashboard')rDash();
+  if(G.AT==='inventory')rInv();
+  if(G.AT==='recipes')rRec();
+  if(G.AT==='history')rHist();
+}
+
+function rUse(){
+  const S=G.S,US=G.US,rec=S.recipes.find(r=>r.id===US.rid),g=parseFloat(US.g)||0;
+  const mkO=arr=>arr.map(r=>`<option value="${r.id}"${US.rid===r.id?' selected':''}>${r.id} — ${r.name}</option>`).join('');
+  let bd=[],hasI=false,allCk=false;
+  if(rec&&g>0){
+    const tot=rec.ingredients.reduce((a,i)=>a+i.pct,0);
+    bd=rec.ingredients.map(ing=>{
+      const mat=S.materials.find(m=>m.id===ing.materialId);
+      const need=Math.round(g*ing.pct/tot*10)/10;
+      const ok=!mat||!mat.tracked||(mat.qty>=need);
+      if(!ok)hasI=true;
+      return{id:ing.materialId,pct:ing.pct,mat,need,ok};
+    });
+    allCk=bd.every(b=>US.ck[b.id]);
+  }
+  const canDo=rec&&g>0&&!hasI&&allCk,canPend=!!(rec&&g>0);
+  const elec=S.recipes.filter(r=>r.kiln==='電窯'),gas=S.recipes.filter(r=>r.kiln==='瓦斯窯');
+  document.getElementById('t-use').innerHTML=`
+    ${S.pending.length?`<div style="margin-bottom:1.25rem"><div class="lbl">待補料清單</div>
+      ${S.pending.map(p=>`<div class="upc">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+            <span class="rid">${p.recipeId}</span>
+            <span style="font-size:13px;font-weight:500;color:var(--amber)">${p.recipeName}</span>
+            <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--amber)">${p.totalGrams}g</span>
+          </div>
+          <div>${p.missing.map(m=>`<span class="mt">缺 ${m.materialId} ${m.need}g</span>`).join('')}</div>
+        </div>
+        <button class="btn bsm bdk" data-act="pgo" data-pid="${p.id}" style="flex-shrink:0">繼續調配</button>
+      </div>`).join('')}
+    </div>`:''}
+    <div class="uh"><div class="ut">
+      <div class="uc"><label>釉藥配方</label>
+        <select id="rsel"><option value="">— 選擇配方 —</option>
+          <optgroup label="電窯">${mkO(elec)}</optgroup>
+          <optgroup label="瓦斯窯">${mkO(gas)}</optgroup>
+        </select>
+      </div>
+      <div class="uc ucg"><label>調配總量</label>
+        <div class="gw">
+          <button class="gs" id="gm">−</button>
+          <input class="gi" type="number" id="gi" value="${US.g||''}" placeholder="0" onfocus="this.select()">
+          <span class="gu">g</span>
+          <button class="gs" id="gp">+</button>
+        </div>
+        <div class="qg" id="qgw"></div>
+      </div>
+    </div>
+    ${rec?`<div style="margin-top:12px;display:flex;align-items:center;gap:8px">
+      <span class="rid">${rec.id}</span>
+      <div style="width:12px;height:12px;border-radius:50%;background:${rec.color};border:1px solid rgba(0,0,0,.12);flex-shrink:0"></div>
+      <span style="font-size:13px;color:var(--ink3)">${rec.kiln}${rec.note?' — '+rec.note:''}</span>
+    </div>`:''}
+    </div>
+    ${rec&&g>0?`
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div class="lbl" style="margin:0">${bd.length} 種原料</div>
+        <button class="btn bsm" id="cka">全部勾選</button>
+      </div>
+      ${hasI?'<div class="bar ber">部分原料庫存不足</div>':allCk?'<div class="bar bok2">可以調配</div>':'<div class="bar bwn">請逐一確認並勾選每種原料</div>'}
+      <div style="display:flex;gap:10px;padding:0 14px;margin-bottom:5px">
+        <div style="flex:1"></div>
+        <span style="font-size:10px;color:var(--ink3);width:36px;text-align:right">比例</span>
+        <span style="font-size:10px;color:var(--ink3);width:52px;text-align:right">需要</span>
+        <span style="font-size:10px;color:var(--ink3);width:70px;text-align:right">庫存</span>
+        <span style="width:18px"></span>
+      </div>
+      ${bd.map((b,i)=>`<div class="mr${b.ok?'':' ins'}${US.ck[b.id]?' ck':''}" id="mr${i}">
+        <div class="chk"></div><span class="mn">${b.id}</span>
+        <span class="mp">${b.pct}%</span><span class="mnd">${b.need}g</span>
+        <span style="font-size:11px;width:70px;text-align:right;color:var(--ink3)">${b.mat&&b.mat.tracked?b.mat.qty+'g':'—'}</span>
+        <span style="width:18px;text-align:center;font-size:12px;color:var(--red)">${b.ok?'':'!'}</span>
+      </div>`).join('')}
+      <div class="g2" style="margin-top:16px">
+        <div class="fld" style="margin:0"><label>操作者</label><input id="uu" value="${US.user}" placeholder="你的名字"></div>
+        <div class="fld" style="margin:0"><label>備註</label><input id="un" value="${US.note}" placeholder="例：茶杯 10 個"></div>
+      </div>
+      <div class="fe">
+        <button class="btn bwarn" id="sp" ${canPend?'':'disabled'}>⏸ 列入待補料</button>
+        <button class="btn bcl" id="du" ${canDo?'':'disabled'}>確認調配，扣除庫存</button>
+      </div>
+    `:''}`;
+  const rsel=document.getElementById('rsel');
+  rsel.value=US.rid||'';
+  rsel.onchange=function(){G.US.rid=this.value;G.US.ck={};rUse();};
+  document.getElementById('gi').oninput=function(){G.US.g=this.value;rUse();};
+  document.getElementById('gm').onclick=()=>stepG(-100);
+  document.getElementById('gp').onclick=()=>stepG(100);
+  const qw=document.getElementById('qgw');
+  [3000,5000].forEach(v=>{
+    const b=document.createElement('button');b.className='qb'+(US.g==v?' on':'');b.textContent=v+'g';
+    b.onclick=()=>{G.US.g=v;rUse();};qw.appendChild(b);
+  });
+  bd.forEach((b,i)=>{const row=document.getElementById('mr'+i);if(row)row.onclick=()=>{G.US.ck[b.id]=!G.US.ck[b.id];rUse();};});
+  const cka=document.getElementById('cka');if(cka)cka.onclick=()=>{const r=G.S.recipes.find(r=>r.id===G.US.rid);if(r)r.ingredients.forEach(i=>G.US.ck[i.materialId]=true);rUse();};
+  document.getElementById('uu').oninput=function(){G.US.user=this.value;};
+  document.getElementById('un').oninput=function(){G.US.note=this.value;};
+  const du=document.getElementById('du'),sp=document.getElementById('sp');
+  if(du)du.onclick=doUse;if(sp)sp.onclick=savePend;
+}
+function stepG(d){const v=Math.max(0,(parseFloat(G.US.g)||0)+d);G.US.g=v;const e=document.getElementById('gi');if(e)e.value=v;rUse();}
+function doUse(){
+  const S=G.S,US=G.US,rec=S.recipes.find(r=>r.id===US.rid),g=parseFloat(US.g)||0;
+  if(!rec||g<=0)return;
+  const tot=rec.ingredients.reduce((a,i)=>a+i.pct,0);
+  const bd=rec.ingredients.map(ing=>{
+    const need=Math.round(g*ing.pct/tot*10)/10;
+    const mat=S.materials.find(m=>m.id===ing.materialId);
+    if(mat&&mat.tracked)mat.qty=Math.round((mat.qty-need)*10)/10;
+    return{materialId:ing.materialId,grams:need};
+  });
+  S.log.unshift({id:'l'+Date.now(),date:new Date().toISOString().slice(0,10),type:'use',recipeId:rec.id,recipeName:rec.name,totalGrams:g,user:US.user,note:US.note,breakdown:bd});
+  G.US={rid:'',g:3000,user:'',note:'',ck:{}};save();toast('調配完成');
+}
+function savePend(){
+  const S=G.S,US=G.US,rec=S.recipes.find(r=>r.id===US.rid),g=parseFloat(US.g)||0;
+  if(!rec||g<=0)return;
+  const tot=rec.ingredients.reduce((a,i)=>a+i.pct,0);
+  const missing=rec.ingredients.filter(ing=>{const mat=S.materials.find(m=>m.id===ing.materialId);const need=Math.round(g*ing.pct/tot*10)/10;return mat&&mat.tracked&&mat.qty<need;})
+    .map(ing=>{const need=Math.round(g*ing.pct/tot*10)/10;const mat=S.materials.find(m=>m.id===ing.materialId);return{materialId:ing.materialId,need,have:mat?mat.qty:0};});
+  S.pending.push({id:'p'+Date.now(),date:new Date().toISOString().slice(0,10),recipeId:rec.id,recipeName:rec.name,totalGrams:g,user:US.user,note:US.note,missing});
+  G.US={rid:'',g:3000,user:'',note:'',ck:{}};save();toast('已列入待補料');
+}
+
+function rPending(){
+  const S=G.S;
+  if(!S.pending.length){document.getElementById('t-pending').innerHTML=`<div class="lbl">待補料（0 筆）</div><div class="empty">目前沒有待補料項目</div>`;return;}
+  document.getElementById('t-pending').innerHTML=`<div class="lbl">待補料（${S.pending.length} 筆）</div>
+    ${S.pending.map(p=>`<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span class="rid">${p.recipeId}</span>
+            <span style="font-size:15px;font-weight:500">${p.recipeName}</span>
+            <span class="bdg bne">${p.totalGrams}g</span>
+          </div>
+          <div style="font-size:12px;color:var(--ink3)">${p.date}${p.user?' · '+p.user:''}${p.note?' — '+p.note:''}</div>
+        </div>
+        <button class="btn bsm bdan" data-act="del" data-pid="${p.id}">移除</button>
+      </div>
+      ${p.missing.length?`<div class="lbl" style="margin-bottom:6px">缺料明細</div>
+        ${p.missing.map(m=>`<div class="mr ins" style="cursor:default;margin-bottom:4px">
+          <span class="mn">${m.materialId}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--red);margin-left:auto">需 ${m.need}g · 有 ${m.have}g · 缺 ${Math.round((m.need-m.have)*10)/10}g</span>
+        </div>`).join('')}`:''}
+      <div class="fe" style="margin-top:10px">
+        <button class="btn bsm bdk" data-act="go" data-pid="${p.id}">繼續調配 →</button>
+      </div>
+    </div>`).join('')}`;
+}
+
+function rDash(){
+  const S=G.S,trk=S.materials.filter(m=>m.tracked),low=trk.filter(m=>m.qty>0&&m.qty<m.minQty),out=trk.filter(m=>m.qty<=0),warns=[...out,...low];
+  document.getElementById('t-dashboard').innerHTML=`
+    <div class="ss">
+      <div class="sc"><div class="sn">${S.recipes.length}</div><div class="sl">配方數量</div></div>
+      <div class="sc"><div class="sn">${S.materials.length}</div><div class="sl">原料種類</div></div>
+      <div class="sc"><div class="sn" style="color:var(--amber)">${S.pending.length}</div><div class="sl">待補料</div></div>
+      <div class="sc"><div class="sn" style="color:var(--red)">${low.length+out.length}</div><div class="sl">低庫存</div></div>
+    </div>
+    ${warns.length?`<div class="bar bwn" style="margin-bottom:1.25rem">需補貨：${warns.slice(0,5).map(m=>`<strong>${m.name}</strong>`).join('、')}${warns.length>5?` 等 ${warns.length} 項`:''}</div>`:''}
+    <div class="g2" style="gap:16px">
+      <div><div class="lbl">需要補貨</div><div class="card csm">
+        ${warns.length?warns.slice(0,8).map(m=>{const s=m.qty<=0?'ot':'lw';return`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line2)"><div><div style="font-size:13px">${m.name}</div><div class="bt"><div class="bf ${s}" style="width:${m.minQty?Math.min(100,Math.round(m.qty/(m.minQty*3)*100)):0}%"></div></div></div><span class="bdg ${s==='ot'?'bot':'blw'}">${s==='ot'?'缺貨':'不足'}</span></div>`;}).join(''):'<div class="empty" style="padding:1rem">庫存良好</div>'}
+      </div></div>
+      <div><div class="lbl">最近調配</div><div class="card csm">
+        ${S.log.slice(0,6).map(l=>`<div class="lr"><div><div style="display:flex;align-items:center;gap:7px"><span class="rid">${l.recipeId}</span><span style="font-size:13px;font-weight:500">${l.recipeName}</span></div><div style="font-size:11px;color:var(--ink3);margin-top:2px">${l.totalGrams}g${l.user?' · '+l.user:''}</div></div><span class="ld">${l.date}</span></div>`).join('')||'<div class="empty" style="padding:1rem">尚無記錄</div>'}
+      </div></div>
+    </div>`;
+}
+
+function rInv(){
+  const S=G.S,IF=G.IF;
+  let mats=S.materials;
+  if(IF==='trk')mats=mats.filter(m=>m.tracked);
+  else if(IF==='untrk')mats=mats.filter(m=>!m.tracked);
+  else if(IF==='low')mats=mats.filter(m=>m.tracked&&m.qty>0&&m.qty<m.minQty);
+  else if(IF==='out')mats=mats.filter(m=>m.tracked&&m.qty<=0);
+  document.getElementById('t-inventory').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <div class="lbl" style="margin:0">原料庫存 ${S.materials.length} 種</div>
+      <button class="btn bdk bsm" id="amb">+ 新增原料</button>
+    </div>
+    <div class="fb">
+      ${[['all',`全部 ${S.materials.length}`],['trk',`追蹤中 ${S.materials.filter(m=>m.tracked).length}`],['untrk',`未追蹤 ${S.materials.filter(m=>!m.tracked).length}`],['low',`不足 ${S.materials.filter(m=>m.tracked&&m.qty>0&&m.qty<m.minQty).length}`],['out',`缺貨 ${S.materials.filter(m=>m.tracked&&m.qty<=0).length}`]].map(([v,l])=>`<button class="ff${IF===v?' on':''}" data-ff="${v}">${l}</button>`).join('')}
+    </div>
+    <div class="card csm">
+      ${mats.map(m=>{
+        const s=!m.tracked?'un':(m.qty<=0?'ot':(m.qty<m.minQty?'lw':'ok'));
+        const pct=m.tracked&&m.minQty?Math.min(100,Math.round(m.qty/(m.minQty*3)*100)):0;
+        const bmap={ot:'bot',lw:'blw',ok:'bok'},lmap={ot:'缺貨',lw:'不足',ok:'正常'};
+        return`<div class="ir">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:7px">
+              <span style="font-size:14px">${m.name}</span>
+              ${s!=='un'?`<span class="bdg ${bmap[s]}" style="font-size:10px">${lmap[s]}</span>`:''}
+            </div>
+            ${m.tracked?`<div style="display:flex;align-items:center;gap:8px;margin-top:3px">
+              <span style="font-family:'DM Mono',monospace;font-size:12px"><strong>${m.qty}g</strong> <span style="color:var(--ink3)">/ ${m.minQty}g</span></span>
+              <div class="bt" style="width:60px"><div class="bf ${s==='ot'?'ot':s==='lw'?'lw':''}" style="width:${pct}%"></div></div>
+            </div>`:`<div style="font-size:11px;color:var(--ink3);margin-top:2px">未開始追蹤</div>`}
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
+            <button class="tp ${m.tracked?'trk':'uns'}" data-act="tp" data-mid="${m.id}">
+              <span class="tpd"></span>${m.tracked?'追蹤中':'未追蹤'}
+            </button>
+            ${m.tracked?`<button class="ib sg" data-act="adj" data-mid="${m.id}" title="入庫">${I.in}</button>`:''}
+            <button class="ib" data-act="edit" data-mid="${m.id}" title="編輯">${I.ed}</button>
+            <button class="ib dn" data-act="del" data-mid="${m.id}" title="刪除">${I.tr}</button>
+          </div>
+        </div>`;}).join('')}
+      ${!mats.length?'<div class="empty">此分類無原料</div>':''}
+    </div>`;
+  document.getElementById('amb').onclick=oAddMat;
+}
+
+function rRec(){
+  const S=G.S,RF=G.RF,RS=G.RS;
+  let recs=S.recipes;
+  if(RF!=='all')recs=recs.filter(r=>r.kiln===RF);
+  if(RS)recs=recs.filter(r=>r.name.includes(RS)||r.id.toLowerCase().includes(RS.toLowerCase()));
+  const wrap=document.getElementById('t-recipes');
+  wrap.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <div class="lbl" style="margin:0">配方 ${S.recipes.length} 支</div>
+      <button class="btn bdk bsm" id="arb">+ 新增配方</button>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+      <div class="fb" style="margin:0;flex:1">
+        ${[['all','全部'],['電窯','電窯'],['瓦斯窯','瓦斯窯']].map(([v,l])=>`<button class="ff${RF===v?' on':''}" id="rf-${v}">${l}</button>`).join('')}
+      </div>
+      <input id="rsch" style="width:180px;flex-shrink:0" placeholder="搜尋 ID 或名稱…" value="${RS}">
+    </div>
+    <div class="g3">
+    ${recs.map(r=>{const tot=r.ingredients.reduce((a,i)=>a+i.pct,0);
+      return`<div class="rc" id="rc-${r.id}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:32px;height:32px;border-radius:50%;background:${r.color};border:2px solid rgba(0,0,0,.08);flex-shrink:0"></div>
+          <div><div class="rid" style="margin-bottom:3px">${r.id}</div><div style="font-size:13px;font-weight:500;line-height:1.2">${r.name}</div></div>
+        </div>
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:8px">${r.kiln} · ${r.ingredients.length} 種</div>
+        ${r.ingredients.slice(0,4).map(i=>`<div class="ri"><span class="rn">${i.materialId}</span><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink2)">${i.pct}%</span></div><div class="pt"><div class="pf" style="width:${i.pct}%"></div></div>`).join('')}
+        ${r.ingredients.length>4?`<div style="font-size:11px;color:var(--ink3);margin-top:4px">+${r.ingredients.length-4} 種…</div>`:''}
+        <div style="font-size:10px;color:${Math.abs(tot-100)>1?'var(--red)':'var(--ink3)'};margin-top:6px;font-family:'DM Mono',monospace">總計 ${tot.toFixed(1)}%</div>
+      </div>`;}).join('')}
+    </div>${!recs.length?'<div class="empty">無符合條件的配方</div>':''}`;
+  document.getElementById('arb').onclick=oAddRec;
+  ['all','電窯','瓦斯窯'].forEach(v=>{const b=document.getElementById('rf-'+v);if(b)b.onclick=()=>{G.RF=v;rRec();};});
+  document.getElementById('rsch').oninput=function(){G.RS=this.value;rRec();};
+  recs.forEach(r=>{const el=document.getElementById('rc-'+r.id);if(el)el.onclick=()=>oRecDet(r.id);});
+}
+
+function rHist(){
+  const sorted=G.S.log.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  document.getElementById('t-history').innerHTML=`
+    <div class="lbl">使用記錄 ${sorted.length} 筆</div>
+    ${sorted.length?sorted.map(l=>`<div class="card csm"><div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="rid">${l.recipeId}</span><span style="font-size:14px;font-weight:500">${l.recipeName}</span><span class="bdg bne">${l.totalGrams}g</span>${l.user?`<span style="font-size:12px;color:var(--ink3)">${l.user}</span>`:''}</div>
+      ${l.note?`<div style="font-size:12px;color:var(--ink3);margin-bottom:5px">${l.note}</div>`:''}
+      <div class="lt">${(l.breakdown||[]).map(b=>`<span class="ltg">${b.materialId} ${b.grams}g</span>`).join('')}</div></div>
+      <span class="ld">${l.date}</span></div></div>`).join(''):'<div class="empty">尚無記錄</div>'}`;
+}
+
+function modal(h){document.getElementById('modal').innerHTML=`<div class="mb" onclick="if(event.target===this)cModal()">${h}</div>`;}
+function cModal(){document.getElementById('modal').innerHTML='';}
+function oAddMat(){
+  modal(`<div class="md"><div class="mt2">新增原料</div>
+    <div class="fld"><label>名稱</label><input id="mn"></div>
+    <div class="g2"><div class="fld"><label>目前庫存 (g)</label><input id="mq" type="number" value="0"></div><div class="fld"><label>最低警示 (g)</label><input id="mm" type="number" value="200"></div></div>
+    <div class="fld"><label>庫存追蹤</label><select id="mtr"><option value="false">未追蹤</option><option value="true">追蹤中</option></select></div>
+    <div class="fld"><label>備註</label><input id="mno" placeholder="選填"></div>
+    <div class="fe"><button class="btn" id="amc">取消</button><button class="btn bcl" id="ams">儲存</button></div>
+  </div>`);
+  document.getElementById('amc').onclick=cModal;
+  document.getElementById('ams').onclick=()=>sMat(null);
+}
+function sMat(id){
+  const name=document.getElementById('mn').value.trim(),qty=parseFloat(document.getElementById('mq').value)||0,minQty=parseFloat(document.getElementById('mm').value)||0,note=document.getElementById('mno').value.trim(),tracked=document.getElementById('mtr').value==='true';
+  if(!name){alert('請輸入名稱');return;}
+  if(id){const m=G.S.materials.find(m=>m.id===id);Object.assign(m,{name,qty,minQty,note,tracked});}
+  else G.S.materials.push({id:'m'+Date.now(),name,qty,tracked,unit:'g',minQty,note});
+  cModal();save();
+}
+function oEditMat(id){
+  const m=G.S.materials.find(m=>m.id===id);
+  modal(`<div class="md"><div class="mt2">編輯原料 — ${m.name}</div>
+    <div class="fld"><label>名稱</label><input id="mn" value="${m.name}"></div>
+    <div class="g2"><div class="fld"><label>庫存 (g)</label><input id="mq" type="number" value="${m.qty}"></div><div class="fld"><label>最低警示 (g)</label><input id="mm" type="number" value="${m.minQty}"></div></div>
+    <div class="fld"><label>庫存追蹤</label><select id="mtr"><option value="false"${!m.tracked?' selected':''}>未追蹤</option><option value="true"${m.tracked?' selected':''}>追蹤中</option></select></div>
+    <div class="fld"><label>備註</label><input id="mno" value="${m.note||''}"></div>
+    <div class="fe"><button class="btn" id="emc">取消</button><button class="btn bcl" id="ems">儲存</button></div>
+  </div>`);
+  document.getElementById('emc').onclick=cModal;document.getElementById('ems').onclick=()=>sMat(id);
+}
+function oAdj(mid){
+  const m=G.S.materials.find(m=>m.id===mid);
+  modal(`<div class="md"><div class="mt2">入庫 — ${m.name}</div>
+    <div style="font-size:13px;color:var(--ink3);margin-bottom:12px">目前庫存：${m.qty}g</div>
+    <div class="fld"><label>入庫數量 (g)</label><input id="aq" type="number"></div>
+    <div class="fld"><label>操作者</label><input id="au" placeholder="你的名字"></div>
+    <div class="fld"><label>備註</label><input id="an" placeholder="選填"></div>
+    <div class="fe"><button class="btn" id="adjc">取消</button><button class="btn bsg" id="adjs">確認入庫</button></div>
+  </div>`);
+  document.getElementById('adjc').onclick=cModal;
+  document.getElementById('adjs').onclick=()=>{
+    const qty=parseFloat(document.getElementById('aq').value)||0;if(qty<=0){alert('請輸入有效數量');return;}
+    m.qty=Math.round((m.qty+qty)*10)/10;
+    G.S.log.unshift({id:'l'+Date.now(),date:new Date().toISOString().slice(0,10),type:'in',materialId:mid,materialName:m.name,qty,note:document.getElementById('an').value.trim(),user:document.getElementById('au').value.trim(),breakdown:[]});
+    cModal();save();
+  };
+}
+function oAddRec(){rRecModal(null);}
+function oRecDet(id){rRecModal(G.S.recipes.find(r=>r.id===id));}
+function rRecModal(r){
+  const isE=!!r;const ings=r?r.ingredients:[{materialId:'',pct:0}];window._ic=ings.length;
+  const mats=G.S.materials;
+  const rows=ings.map((ing,i)=>`<div class="ingr" id="ir-${i}">
+    <select id="im-${i}" style="flex:2">${mats.map(m=>`<option value="${m.id}"${m.id===ing.materialId?' selected':''}>${m.name}</option>`).join('')}</select>
+    <input id="ip-${i}" type="number" placeholder="%" value="${ing.pct||''}" style="width:80px!important">
+    <span style="font-size:12px;color:var(--ink3)">%</span>
+    <button class="btn bsm bdan" id="rmi-${i}">✕</button>
+  </div>`).join('');
+  modal(`<div class="md"><div class="mt2">${isE?'編輯配方':'新增配方'}</div>
+    <div class="g2"><div class="fld"><label>配方 ID</label><input id="ri" value="${r?r.id:''}" placeholder="例：X0Y16"${isE?' readonly style="opacity:.5"':''}></div><div class="fld"><label>配方名稱</label><input id="rn" value="${r?r.name:''}"></div></div>
+    <div class="g2"><div class="fld"><label>窯爐</label><select id="rk"><option${(!r||r.kiln==='電窯')?' selected':''}>電窯</option><option${r&&r.kiln==='瓦斯窯'?' selected':''}>瓦斯窯</option></select></div><div class="fld"><label>顏色</label><input id="rc" type="color" value="${r?r.color:'#ccbbaa'}" style="height:42px;padding:2px"></div></div>
+    <div class="fld"><label>備註</label><input id="rno" value="${r?r.note:''}"></div>
+    <div style="font-size:12px;font-weight:500;margin:10px 0 8px;color:var(--ink2)">原料組成（百分比）</div>
+    <div id="il">${rows}</div>
+    <button class="btn bsm" id="aib" style="margin-bottom:14px">+ 新增原料</button>
+    <div class="fe"><button class="btn" id="rcc">取消</button>${isE?`<button class="btn bdan" id="rcd">刪除</button>`:''}
+    <button class="btn bcl" id="rcs">${isE?'儲存':'新增'}</button></div>
+  </div>`);
+  ings.forEach((_,i)=>{document.getElementById('rmi-'+i).onclick=()=>rmIng(i);});
+  document.getElementById('aib').onclick=addIng;
+  document.getElementById('rcc').onclick=cModal;
+  if(isE)document.getElementById('rcd').onclick=()=>{if(!confirm('確定刪除此配方？'))return;G.S.recipes=G.S.recipes.filter(x=>x.id!==r.id);cModal();save();};
+  document.getElementById('rcs').onclick=()=>sRec(isE?r.id:null);
+}
+function addIng(){
+  const i=window._ic++;const div=document.createElement('div');div.className='ingr';div.id=`ir-${i}`;
+  div.innerHTML=`<select id="im-${i}" style="flex:2">${G.S.materials.map(m=>`<option value="${m.id}">${m.name}</option>`).join('')}</select>
+    <input id="ip-${i}" type="number" placeholder="%" style="width:80px!important">
+    <span style="font-size:12px;color:var(--ink3)">%</span>
+    <button class="btn bsm bdan" id="rmi-${i}">✕</button>`;
+  document.getElementById('il').appendChild(div);
+  document.getElementById('rmi-'+i).onclick=()=>rmIng(i);
+}
+function rmIng(i){const el=document.getElementById('ir-'+i);if(el)el.remove();}
+function sRec(id){
+  const rid=id||document.getElementById('ri').value.trim(),name=document.getElementById('rn').value.trim();
+  if(!rid||!name){alert('請填入 ID 與名稱');return;}
+  const ings=[];
+  for(let i=0;i<window._ic;i++){const me=document.getElementById('im-'+i),pe=document.getElementById('ip-'+i);if(!me)continue;const pct=parseFloat(pe.value)||0;if(pct>0)ings.push({materialId:me.value,pct});}
+  if(!ings.length){alert('請至少新增一種原料');return;}
+  const data={name,color:document.getElementById('rc').value,kiln:document.getElementById('rk').value,note:document.getElementById('rno').value.trim(),ingredients:ings};
+  if(id){Object.assign(G.S.recipes.find(x=>x.id===id),data);}
+  else{if(G.S.recipes.find(x=>x.id===rid)){alert('此 ID 已存在');return;}G.S.recipes.push({id:rid,...data});}
+  cModal();save();
+}
+function toast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:11px 22px;border-radius:100px;font-size:13px;z-index:999;opacity:1;transition:opacity .35s;font-family:"DM Sans",sans-serif;white-space:nowrap';
+  t.textContent=msg;document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),380)},2400);
+}
+load();
+</script>
+</body>
+</html>
