@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>青青土氣｜釉藥管理系統</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#1a1814;--ink2:#4a453e;--ink3:#9a9088;
@@ -16,24 +16,24 @@
   --r:8px;--r2:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--paper);font-size:14px;line-height:1.5}
+body{font-family:'Noto Serif TC','DM Sans',serif;color:var(--ink);background:var(--paper);font-size:14px;line-height:1.6}
 .app{max-width:780px;margin:0 auto;padding:1.5rem 1rem 4rem}
 .hdr{display:flex;align-items:baseline;gap:16px;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--line)}
-.hdr-t{font-family:'DM Serif Display',serif;font-size:26px;letter-spacing:-0.02em}
+.hdr-t{font-family:'Noto Serif TC',serif;font-size:24px;font-weight:600;letter-spacing:0.02em}
 .hdr-s{font-size:12px;color:var(--ink3);letter-spacing:0.06em;text-transform:uppercase}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--sage);display:inline-block;margin-left:auto;flex-shrink:0}
 .sync-dot.saving{background:var(--amber);animation:pulse .8s infinite}
 .sync-dot.err{background:var(--red)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .nav{display:flex;gap:6px;margin-bottom:1.75rem;flex-wrap:wrap}
-.nb{padding:7px 16px;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink2);font-family:'DM Sans',sans-serif;transition:all .15s}
+.nb{padding:7px 16px;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink2);font-family:'DM Sans','Noto Serif TC',sans-serif;transition:all .15s}
 .nb:hover{border-color:var(--ink3);color:var(--ink)}
 .nb.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .cnt{display:inline-block;background:var(--clay);color:#fff;border-radius:100px;font-size:10px;padding:1px 6px;margin-left:4px;font-weight:500}
 .tab{display:none}.tab.on{display:block}
 .ss{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
 .sc{background:var(--paper2);border:1px solid var(--line2);border-radius:var(--r2);padding:14px 16px}
-.sn{font-family:'DM Serif Display',serif;font-size:28px;line-height:1;margin-bottom:4px}
+.sn{font-family:'DM Mono',monospace;font-size:26px;line-height:1;margin-bottom:4px;font-weight:500}
 .sl{font-size:11px;color:var(--ink3);letter-spacing:.04em;text-transform:uppercase}
 .lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:500;margin-bottom:10px}
 .card{background:#fff;border:1px solid var(--line2);border-radius:var(--r2);padding:16px 18px;margin-bottom:10px}
@@ -48,11 +48,11 @@ body{font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--paper);f
 .bok2{background:var(--sage-light);color:var(--sage);border-color:rgba(90,122,90,.2)}
 .bwn{background:var(--amber-light);color:var(--amber);border-color:rgba(184,134,11,.2)}
 .ber{background:var(--red-light);color:var(--red);border-color:rgba(160,48,48,.2)}
-input[type=text],input[type=number],select{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:var(--ink);font-size:14px;font-family:'DM Sans',sans-serif;-webkit-appearance:none;height:42px}
+input[type=text],input[type=number],select{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:var(--ink);font-size:14px;font-family:'Noto Serif TC','DM Sans',serif;-webkit-appearance:none;height:42px}
 input:focus,select:focus{outline:none;border-color:var(--ink3)}
 label{font-size:12px;color:var(--ink3);display:block;margin-bottom:5px}
 .fld{margin-bottom:14px}
-.btn{padding:9px 18px;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink2);font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
+.btn{padding:9px 18px;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink2);font-family:'DM Sans','Noto Serif TC',sans-serif;transition:all .15s;white-space:nowrap}
 .btn:hover{border-color:var(--ink3);color:var(--ink)}
 .bdk{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .bdk:hover{background:var(--ink2)}
@@ -131,7 +131,7 @@ label{font-size:12px;color:var(--ink3);display:block;margin-bottom:5px}
 .ld{font-size:11px;color:var(--ink3);flex-shrink:0;margin-left:12px;font-family:'DM Mono',monospace}
 .mb{position:fixed;inset:0;background:rgba(26,24,20,.5);z-index:200;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;backdrop-filter:blur(2px)}
 .md{background:var(--paper);border-radius:var(--r2);padding:24px;width:520px;max-height:88vh;overflow-y:auto;border:1px solid var(--line)}
-.mt2{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:1.25rem}
+.mt2{font-family:'Noto Serif TC',serif;font-size:19px;font-weight:600;margin-bottom:1.25rem}
 .ingr{display:flex;gap:8px;align-items:center;margin-bottom:8px}
 .empty{text-align:center;padding:3rem 1rem;color:var(--ink3);font-size:14px}
 .loading{text-align:center;padding:4rem 1rem;color:var(--ink3);font-size:15px}
@@ -480,9 +480,9 @@ function rUse(){
         <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:500;margin-left:auto">${b.need}g</span>
         ${b.mat&&b.mat.tracked?`<span style="font-size:11px;color:${b.ok?'var(--ink3)':'var(--red)'};min-width:54px;text-align:right">${b.ok?b.mat.qty+'g':'庫存不足'}</span>`:'<span style="font-size:11px;color:var(--ink3);min-width:54px;text-align:right">—</span>'}
       </div>`).join('')}
-      <div class="g2" style="margin-top:12px">
-        <div style="margin:0"><input id="uu" value="${US.user}" placeholder="操作者" style="height:38px;font-size:13px"></div>
-        <div style="margin:0"><input id="un" value="${US.note}" placeholder="備註" style="height:38px;font-size:13px"></div>
+      <div class="g2" style="margin-top:14px;gap:10px">
+        <input id="uu" value="${US.user}" placeholder="操作者" style="height:40px">
+        <input id="un" value="${US.note}" placeholder="備註（例：茶杯 10 個）" style="height:40px">
       </div>
       <div class="fe">
         ${canPend?`<button class="btn bwarn bsm" id="sp">列入待補料</button>`:''}
@@ -502,8 +502,8 @@ function rUse(){
   });
   bd.forEach((b,i)=>{const row=document.getElementById('mr'+i);if(row)row.onclick=()=>{G.US.ck[b.id]=!G.US.ck[b.id];rUse();};});
   const cka=document.getElementById('cka');if(cka)cka.onclick=()=>{const r=G.S.recipes.find(r=>r.id===G.US.rid);if(r)r.ingredients.forEach(i=>G.US.ck[i.materialId]=true);rUse();};
-  document.getElementById('uu').oninput=function(){G.US.user=this.value;};
-  document.getElementById('un').oninput=function(){G.US.note=this.value;};
+  const uuEl=document.getElementById('uu');if(uuEl)uuEl.oninput=function(){G.US.user=this.value;};
+  const unEl=document.getElementById('un');if(unEl)unEl.oninput=function(){G.US.note=this.value;};
   const du=document.getElementById('du'),sp=document.getElementById('sp');
   if(du)du.onclick=doUse;if(sp)sp.onclick=savePend;
   const otBtn=document.getElementById('open-test');
@@ -625,13 +625,13 @@ function rTestModal(){
     </div>
     ${TS.mode==='free'?`<button class="btn bsm" id="t-add-row" style="margin-bottom:12px">+ 新增原料</button>`:''}
 
-    <div class="g2" style="margin-top:8px">
-      <div class="fld" style="margin:0"><label>試釉名稱（選填）</label><input id="t-name" value="${TS.name}" placeholder="例：X0Y2 增鋅版"></div>
+    <div style="border-top:1px solid var(--line2);margin:16px 0 14px"></div>
+    <div class="fld"><label>試釉名稱</label><input id="t-name" value="${TS.name}" placeholder="選填，例：X0Y2 增鋅版"></div>
+    <div class="g2">
       <div class="fld" style="margin:0"><label>操作者</label><input id="t-user" value="${TS.user}" placeholder="你的名字"></div>
+      <div class="fld" style="margin:0"><label>備註</label><input id="t-note" value="${TS.note}" placeholder="調整原因、觀察…"></div>
     </div>
-    <div class="fld" style="margin-top:10px"><label>備註</label><input id="t-note" value="${TS.note}" placeholder="調整原因、觀察…"></div>
-
-    <div class="fe">
+    <div class="fe" style="margin-top:18px">
       <button class="btn" id="t-cancel">取消</button>
       <button class="btn bsg" id="t-save-only">記錄（不扣庫存）</button>
       <button class="btn bcl" id="t-save-deduct">記錄並扣庫存</button>
