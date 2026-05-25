@@ -263,6 +263,8 @@ const G={
 let saveTimer=null;
 
 // ── seed data ──
+const COLOR_ADJ=new Set(['碳酸銅','碳酸鈷','二氧化鈦','氧化鈦','氧化鋅','氧化錫','氧化鈷','氧化鎳','氧化銅','氧化錳','氧化鉻','氧化鎂','紅氧化鐵','黑氧化鐵','氧化鐵','金紅石','CG435','紅鐵']);
+function guessCategory(name){return COLOR_ADJ.has(name)?'color':'base';}
 const SM=[
   {id:'霞正長石',name:'霞正長石',qty:0,tracked:false,unit:'g',minQty:500,note:'',category:'base'},{id:'鈉長石',name:'鈉長石',qty:0,tracked:false,unit:'g',minQty:500,note:'',category:'base'},
   {id:'日化長石',name:'日化長石',qty:0,tracked:false,unit:'g',minQty:500,note:'',category:'base'},{id:'印度鉀長石',name:'印度鉀長石',qty:0,tracked:false,unit:'g',minQty:500,note:'',category:'base'},
@@ -380,7 +382,7 @@ const LC_KEY='glaze_local_cache';
 function lcSave(data){try{localStorage.setItem(LC_KEY,JSON.stringify(data));}catch(e){}}
 function lcLoad(){try{const s=localStorage.getItem(LC_KEY);return s?JSON.parse(s):null;}catch(e){return null;}}
 function applyData(data){
-  data.materials.forEach(m=>{if(m.tracked===undefined)m.tracked=false;});
+  data.materials.forEach(m=>{if(m.tracked===undefined)m.tracked=false;m.category=guessCategory(m.name);});
   G.S={materials:data.materials,recipes:data.recipes||[],log:data.log||[],pending:data.pending||[]};
 }
 async function load(){
