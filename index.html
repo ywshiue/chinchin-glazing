@@ -118,7 +118,9 @@ label{font-size:12px;color:var(--ink3);display:block;margin-bottom:5px}
 .ib.sg:hover{border-color:var(--sage);background:var(--sage-light);color:var(--sage)}
 .ib.dn:hover{border-color:var(--red);background:var(--red-light);color:var(--red)}
 .ib svg{width:13px;height:13px;display:block;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
-.rc{background:#fff;border:1px solid var(--line2);border-radius:var(--r2);padding:14px 16px;cursor:pointer;transition:all .15s}
+.rc{display:none}
+.rl{background:#fff;border:1px solid var(--line2);border-radius:var(--r);padding:13px 16px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.rl:hover{border-color:var(--line);background:var(--paper2)}
 .rc:hover{border-color:var(--line);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.06)}
 .ri{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
 .rn{color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:72%}
@@ -184,14 +186,12 @@ label{font-size:12px;color:var(--ink3);display:block;margin-bottom:5px}
   </div>
   <div class="nav">
     <button class="nb on" id="nb-use">調配釉藥</button>
-    <button class="nb" id="nb-pending">待補料</button>
     <button class="nb" id="nb-dashboard">總覽</button>
     <button class="nb" id="nb-inventory">原料庫存</button>
     <button class="nb" id="nb-recipes">配方</button>
     <button class="nb" id="nb-history">記錄</button>
   </div>
   <div id="t-use" class="tab on"><div class="loading">載入中…</div></div>
-  <div id="t-pending" class="tab"></div>
   <div id="t-dashboard" class="tab"></div>
   <div id="t-inventory" class="tab"></div>
   <div id="t-recipes" class="tab"></div>
@@ -226,7 +226,7 @@ const I={
   tr:`<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>`,
 };
 
-const TABS=['use','pending','dashboard','inventory','recipes','history'];
+const TABS=['use','dashboard','inventory','recipes','history'];
 const G={
   S:{materials:[],recipes:[],log:[],pending:[]},
   US:{rid:'',g:3000,user:'',note:'',ck:{}},
@@ -313,17 +313,7 @@ TABS.forEach(t=>{
 });
 
 // ── 事件委派（容器永遠存在，不怕 innerHTML 替換）──
-document.getElementById('t-pending').addEventListener('click',e=>{
-  const btn=e.target.closest('[data-act]');if(!btn)return;
-  const act=btn.dataset.act,pid=btn.dataset.pid;
-  if(act==='del'){
-    if(!confirm('確定移除這筆待補料？'))return;
-    G.S.pending=G.S.pending.filter(p=>p.id!==pid);save();
-  } else if(act==='go'){
-    const p=G.S.pending.find(x=>x.id===pid);
-    if(p){G.US={rid:p.recipeId,g:p.totalGrams,user:p.user||'',note:p.note||'',ck:{}};goTab('use');}
-  }
-});
+
 document.getElementById('t-inventory').addEventListener('click',e=>{
   const btn=e.target.closest('[data-act]');
   if(btn){
@@ -405,10 +395,8 @@ function save(){
 // ── render ──
 function render(){
   rUse();
-  const pb=document.getElementById('nb-pending');
-  pb.innerHTML=G.S.pending.length?`待補料 <span class="cnt">${G.S.pending.length}</span>`:'待補料';
+
   // 永遠渲染所有 tab，確保切換過去時資料已就緒
-  rPending();
   rDash();
   rInv();
   rRec();
@@ -745,32 +733,7 @@ function calcRows(){
 
 
 
-function rPending(){
-  const S=G.S;
-  if(!S.pending.length){document.getElementById('t-pending').innerHTML=`<div class="lbl">待補料（0 筆）</div><div class="empty">目前沒有待補料項目</div>`;return;}
-  document.getElementById('t-pending').innerHTML=`<div class="lbl">待補料（${S.pending.length} 筆）</div>
-    ${S.pending.map(p=>`<div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-            <span class="rid">${p.recipeId}</span>
-            <span style="font-size:15px;font-weight:500">${p.recipeName}</span>
-            <span class="bdg bne">${p.totalGrams}g</span>
-          </div>
-          <div style="font-size:12px;color:var(--ink3)">${p.date}${p.user?' · '+p.user:''}${p.note?' — '+p.note:''}</div>
-        </div>
-        <button class="btn bsm bdan" data-act="del" data-pid="${p.id}">移除</button>
-      </div>
-      ${p.missing.length?`<div class="lbl" style="margin-bottom:6px">缺料明細</div>
-        ${p.missing.map(m=>`<div class="mr ins" style="cursor:default;margin-bottom:4px">
-          <span class="mn">${m.materialId}</span>
-          <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--red);margin-left:auto">需 ${m.need}g · 有 ${m.have}g · 缺 ${Math.round((m.need-m.have)*10)/10}g</span>
-        </div>`).join('')}`:''}
-      <div class="fe" style="margin-top:10px">
-        <button class="btn bsm bdk" data-act="go" data-pid="${p.id}">繼續調配 →</button>
-      </div>
-    </div>`).join('')}`;
-}
+
 
 function rDash(){
   const S=G.S,trk=S.materials.filter(m=>m.tracked),low=trk.filter(m=>m.qty>0&&m.qty<m.minQty),out=trk.filter(m=>m.qty<=0),warns=[...out,...low];
@@ -854,17 +817,23 @@ function rRec(){
       </div>
       <input id="rsch" style="width:180px;flex-shrink:0" placeholder="搜尋 ID 或名稱…" value="${RS}">
     </div>
-    <div class="g3">
+    <div>
     ${recs.map(r=>{const tot=r.ingredients.reduce((a,i)=>a+i.pct,0);
-      return`<div class="rc" id="rc-${r.id}">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <div style="width:32px;height:32px;border-radius:50%;background:${r.color};border:2px solid rgba(0,0,0,.08);flex-shrink:0"></div>
-          <div><div class="rid" style="margin-bottom:3px">${r.id}</div><div style="font-size:13px;font-weight:500;line-height:1.2">${r.name}</div></div>
+      return`<div class="rl" id="rc-${r.id}">
+        <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
+          <div style="width:28px;height:28px;border-radius:50%;background:${r.color};border:2px solid rgba(0,0,0,.08);flex-shrink:0"></div>
+          <div style="min-width:0">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="rid">${r.id}</span>
+              <span style="font-size:14px;font-weight:500">${r.name}</span>
+            </div>
+            <div style="font-size:11px;color:var(--ink3);margin-top:2px">${r.kiln} · ${r.ingredients.length} 種原料</div>
+          </div>
         </div>
-        <div style="font-size:11px;color:var(--ink3);margin-bottom:8px">${r.kiln} · ${r.ingredients.length} 種</div>
-        ${r.ingredients.slice(0,4).map(i=>`<div class="ri"><span class="rn">${i.materialId}</span><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink2)">${i.pct}%</span></div><div class="pt"><div class="pf" style="width:${i.pct}%"></div></div>`).join('')}
-        ${r.ingredients.length>4?`<div style="font-size:11px;color:var(--ink3);margin-top:4px">+${r.ingredients.length-4} 種…</div>`:''}
-        <div style="font-size:10px;color:${Math.abs(tot-100)>1?'var(--red)':'var(--ink3)'};margin-top:6px;font-family:'DM Mono',monospace">總計 ${tot.toFixed(1)}%</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:260px">
+          ${r.ingredients.slice(0,6).map(i=>`<span style="font-size:11px;background:var(--paper2);border-radius:4px;padding:2px 7px;font-family:'DM Mono',monospace;color:var(--ink3)">${i.materialId} ${i.pct}%</span>`).join('')}
+          ${r.ingredients.length>6?`<span style="font-size:11px;color:var(--ink3)">+${r.ingredients.length-6}</span>`:''}
+        </div>
       </div>`;}).join('')}
     </div>${!recs.length?'<div class="empty">無符合條件的配方</div>':''}`;
   const arbBtn=document.getElementById('arb');if(arbBtn)arbBtn.onclick=oAddRec;
