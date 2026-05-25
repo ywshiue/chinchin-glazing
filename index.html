@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>青青土氣｜釉藥管理系統</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#1a1814;--ink2:#4a453e;--ink3:#9a9088;
@@ -16,24 +16,24 @@
   --r:8px;--r2:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Serif TC','DM Sans',serif;color:var(--ink);background:var(--paper);font-size:14px;line-height:1.6}
+body{font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--paper);font-size:14px;line-height:1.5}
 .app{max-width:780px;margin:0 auto;padding:1.5rem 1rem 4rem}
 .hdr{display:flex;align-items:baseline;gap:16px;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--line)}
-.hdr-t{font-family:'Noto Serif TC',serif;font-size:24px;font-weight:600;letter-spacing:0.02em}
+.hdr-t{font-family:'DM Sans',sans-serif;font-size:22px;font-weight:600;letter-spacing:-0.01em}
 .hdr-s{font-size:12px;color:var(--ink3);letter-spacing:0.06em;text-transform:uppercase}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--sage);display:inline-block;margin-left:auto;flex-shrink:0}
 .sync-dot.saving{background:var(--amber);animation:pulse .8s infinite}
 .sync-dot.err{background:var(--red)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .nav{display:flex;gap:6px;margin-bottom:1.75rem;flex-wrap:wrap}
-.nb{padding:7px 16px;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink2);font-family:'DM Sans','Noto Serif TC',sans-serif;transition:all .15s}
+.nb{padding:7px 16px;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink2);font-family:'DM Sans',sans-serif;transition:all .15s}
 .nb:hover{border-color:var(--ink3);color:var(--ink)}
 .nb.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .cnt{display:inline-block;background:var(--clay);color:#fff;border-radius:100px;font-size:10px;padding:1px 6px;margin-left:4px;font-weight:500}
 .tab{display:none}.tab.on{display:block}
 .ss{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
 .sc{background:var(--paper2);border:1px solid var(--line2);border-radius:var(--r2);padding:14px 16px}
-.sn{font-family:'DM Mono',monospace;font-size:26px;line-height:1;margin-bottom:4px;font-weight:500}
+.sn{font-family:'DM Mono',monospace;font-size:26px;line-height:1;margin-bottom:4px}
 .sl{font-size:11px;color:var(--ink3);letter-spacing:.04em;text-transform:uppercase}
 .lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:500;margin-bottom:10px}
 .card{background:#fff;border:1px solid var(--line2);border-radius:var(--r2);padding:16px 18px;margin-bottom:10px}
@@ -48,11 +48,11 @@ body{font-family:'Noto Serif TC','DM Sans',serif;color:var(--ink);background:var
 .bok2{background:var(--sage-light);color:var(--sage);border-color:rgba(90,122,90,.2)}
 .bwn{background:var(--amber-light);color:var(--amber);border-color:rgba(184,134,11,.2)}
 .ber{background:var(--red-light);color:var(--red);border-color:rgba(160,48,48,.2)}
-input[type=text],input[type=number],select{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:var(--ink);font-size:14px;font-family:'Noto Serif TC','DM Sans',serif;-webkit-appearance:none;height:42px}
+input[type=text],input[type=number],select{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:var(--ink);font-size:14px;font-family:'DM Sans',sans-serif;-webkit-appearance:none;height:42px}
 input:focus,select:focus{outline:none;border-color:var(--ink3)}
 label{font-size:12px;color:var(--ink3);display:block;margin-bottom:5px}
 .fld{margin-bottom:14px}
-.btn{padding:9px 18px;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink2);font-family:'DM Sans','Noto Serif TC',sans-serif;transition:all .15s;white-space:nowrap}
+.btn{padding:9px 18px;border:1px solid var(--line);border-radius:100px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink2);font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
 .btn:hover{border-color:var(--ink3);color:var(--ink)}
 .bdk{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .bdk:hover{background:var(--ink2)}
@@ -131,11 +131,14 @@ label{font-size:12px;color:var(--ink3);display:block;margin-bottom:5px}
 .ld{font-size:11px;color:var(--ink3);flex-shrink:0;margin-left:12px;font-family:'DM Mono',monospace}
 .mb{position:fixed;inset:0;background:rgba(26,24,20,.5);z-index:200;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;backdrop-filter:blur(2px)}
 .md{background:var(--paper);border-radius:var(--r2);padding:24px;width:520px;max-height:88vh;overflow-y:auto;border:1px solid var(--line)}
-.mt2{font-family:'Noto Serif TC',serif;font-size:19px;font-weight:600;margin-bottom:1.25rem}
+.mt2{font-family:'DM Sans',sans-serif;font-size:18px;font-weight:600;margin-bottom:1.25rem}
 .ingr{display:flex;gap:8px;align-items:center;margin-bottom:8px}
 .empty{text-align:center;padding:3rem 1rem;color:var(--ink3);font-size:14px}
 .loading{text-align:center;padding:4rem 1rem;color:var(--ink3);font-size:15px}
 
+.stab{padding:8px 16px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:13px;color:var(--ink3);font-family:'DM Sans',sans-serif;transition:all .15s;margin-bottom:-1px}
+.stab:hover{color:var(--ink)}
+.stab.son{color:var(--ink);border-bottom-color:var(--ink);font-weight:500}
 /* ── RWD：手機版 ── */
 @media(max-width:600px){
   .app{padding:1rem .75rem 5rem}
@@ -413,39 +416,50 @@ function render(){
 }
 
 function rUse(){
-  const S=G.S,US=G.US,rec=S.recipes.find(r=>r.id===US.rid),g=parseFloat(US.g)||0;
-  const mkO=arr=>arr.map(r=>`<option value="${r.id}"${US.rid===r.id?' selected':''}>${r.id} — ${r.name}</option>`).join('');
-  let bd=[],hasI=false,allCk=false;
-  if(rec&&g>0){
-    const tot=rec.ingredients.reduce((a,i)=>a+i.pct,0);
-    bd=rec.ingredients.map(ing=>{
-      const mat=S.materials.find(m=>m.id===ing.materialId);
-      const need=Math.round(g*ing.pct/tot*10)/10;
-      const ok=!mat||!mat.tracked||(mat.qty>=need);
-      if(!ok)hasI=true;
-      return{id:ing.materialId,pct:ing.pct,mat,need,ok};
-    });
-    allCk=bd.every(b=>US.ck[b.id]);
-  }
-  const canDo=rec&&g>0&&!hasI&&allCk,canPend=!!(rec&&g>0);
-  const elec=S.recipes.filter(r=>r.kiln==='電窯'),gas=S.recipes.filter(r=>r.kiln==='瓦斯窯');
-  document.getElementById('t-use').innerHTML=`
-    ${S.pending.length?`<div style="margin-bottom:1.25rem">
-      ${S.pending.map(p=>`<div class="upc">
-        <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <span class="rid">${p.recipeId}</span>
-            <span style="font-size:13px;font-weight:500;color:var(--amber)">${p.recipeName}</span>
-            ${p.missing.map(m=>`<span class="mt">缺 ${m.materialId}</span>`).join('')}
-          </div>
-        </div>
-        <button class="btn bsm bdk" data-act="pgo" data-pid="${p.id}" style="flex-shrink:0">繼續</button>
-      </div>`).join('')}
-    </div>`:''}
-    <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
-      <button class="btn bsm" id="open-test">試釉記錄</button>
-    </div>
-    <div class="uh"><div class="ut">
+  // sub-tab state stored on G.USE_TAB
+  if(!G.USE_TAB)G.USE_TAB='recipe';
+  const tab=G.USE_TAB;
+  const S=G.S,US=G.US;
+
+  // pending banners
+  const pendHTML=S.pending.length?`<div style="margin-bottom:1rem">
+    ${S.pending.map(p=>`<div class="upc">
+      <div style="flex:1;min-width:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span class="rid">${p.recipeId}</span>
+        <span style="font-size:13px;font-weight:500;color:var(--amber)">${p.recipeName}</span>
+        ${p.missing.map(m=>`<span class="mt">缺 ${m.materialId}</span>`).join('')}
+      </div>
+      <button class="btn bsm bdk" data-act="pgo" data-pid="${p.id}" style="flex-shrink:0">繼續</button>
+    </div>`).join('')}
+  </div>`:'';
+
+  // sub-tab nav
+  const subNav=`<div style="display:flex;gap:6px;margin-bottom:1.25rem;border-bottom:1px solid var(--line2);padding-bottom:0">
+    <button class="stab${tab==='recipe'?' son':''}" id="st-recipe">配方調配</button>
+    <button class="stab${tab==='base'?' son':''}" id="st-base">基底試釉</button>
+    <button class="stab${tab==='free'?' son':''}" id="st-free">自由調配</button>
+  </div>`;
+
+  let body='';
+
+  if(tab==='recipe'){
+    const rec=S.recipes.find(r=>r.id===US.rid),g=parseFloat(US.g)||0;
+    const elec=S.recipes.filter(r=>r.kiln==='電窯'),gas=S.recipes.filter(r=>r.kiln==='瓦斯窯');
+    const mkO=arr=>arr.map(r=>`<option value="${r.id}"${US.rid===r.id?' selected':''}>${r.id} — ${r.name}</option>`).join('');
+    let bd=[],hasI=false,allCk=false;
+    if(rec&&g>0){
+      const tot=rec.ingredients.reduce((a,i)=>a+i.pct,0);
+      bd=rec.ingredients.map(ing=>{
+        const mat=S.materials.find(m=>m.id===ing.materialId);
+        const need=Math.round(g*ing.pct/tot*10)/10;
+        const ok=!mat||!mat.tracked||(mat.qty>=need);
+        if(!ok)hasI=true;
+        return{id:ing.materialId,pct:ing.pct,mat,need,ok};
+      });
+      allCk=bd.every(b=>US.ck[b.id]);
+    }
+    const canDo=rec&&g>0&&!hasI&&allCk,canPend=!!(rec&&g>0);
+    body=`<div class="uh"><div class="ut">
       <div class="uc"><label>釉藥配方</label>
         <select id="rsel"><option value="">— 選擇配方 —</option>
           <optgroup label="電窯">${mkO(elec)}</optgroup>
@@ -462,10 +476,10 @@ function rUse(){
         <div class="qg" id="qgw"></div>
       </div>
     </div>
-    ${rec?`<div style="margin-top:12px;display:flex;align-items:center;gap:8px">
+    ${rec?`<div style="margin-top:10px;display:flex;align-items:center;gap:8px">
       <span class="rid">${rec.id}</span>
-      <div style="width:12px;height:12px;border-radius:50%;background:${rec.color};border:1px solid rgba(0,0,0,.12);flex-shrink:0"></div>
-      <span style="font-size:13px;color:var(--ink3)">${rec.kiln}${rec.note?' — '+rec.note:''}</span>
+      <div style="width:10px;height:10px;border-radius:50%;background:${rec.color};border:1px solid rgba(0,0,0,.12);flex-shrink:0"></div>
+      <span style="font-size:12px;color:var(--ink3)">${rec.kiln}</span>
     </div>`:''}
     </div>
     ${rec&&g>0?`
@@ -480,34 +494,193 @@ function rUse(){
         <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:500;margin-left:auto">${b.need}g</span>
         ${b.mat&&b.mat.tracked?`<span style="font-size:11px;color:${b.ok?'var(--ink3)':'var(--red)'};min-width:54px;text-align:right">${b.ok?b.mat.qty+'g':'庫存不足'}</span>`:'<span style="font-size:11px;color:var(--ink3);min-width:54px;text-align:right">—</span>'}
       </div>`).join('')}
-      <div class="g2" style="margin-top:14px;gap:10px">
-        <input id="uu" value="${US.user}" placeholder="操作者" style="height:40px">
-        <input id="un" value="${US.note}" placeholder="備註（例：茶杯 10 個）" style="height:40px">
-      </div>
       <div class="fe">
         ${canPend?`<button class="btn bwarn bsm" id="sp">列入待補料</button>`:''}
         <button class="btn bcl" id="du" ${canDo?'':'disabled'}>確認調配</button>
       </div>
     `:''}`;
-  const rsel=document.getElementById('rsel');
-  rsel.value=US.rid||'';
-  rsel.onchange=function(){G.US.rid=this.value;G.US.ck={};rUse();};
-  document.getElementById('gi').oninput=function(){G.US.g=this.value;rUse();};
-  document.getElementById('gm').onclick=()=>stepG(-100);
-  document.getElementById('gp').onclick=()=>stepG(100);
-  const qw=document.getElementById('qgw');
-  [3000,5000].forEach(v=>{
-    const b=document.createElement('button');b.className='qb'+(US.g==v?' on':'');b.textContent=v+'g';
-    b.onclick=()=>{G.US.g=v;rUse();};qw.appendChild(b);
+  } else if(tab==='base'){
+    // 基底試釉：選配方 + 換算基準 → 帶入參考克數，可調整
+    const TS=G.TS||(G.TS={baseRid:'',scale:100,rows:[],name:''});
+    const elec=S.recipes.filter(r=>r.kiln==='電窯'),gas=S.recipes.filter(r=>r.kiln==='瓦斯窯');
+    const mkO=arr=>arr.map(r=>`<option value="${r.id}"${TS.baseRid===r.id?' selected':''}>${r.id} — ${r.name}</option>`).join('');
+    const rows=TS.rows;
+    body=`<div class="uh">
+      <div class="ut">
+        <div class="uc"><label>基底配方</label>
+          <select id="ts-base"><option value="">— 選擇配方 —</option>
+            <optgroup label="電窯">${mkO(elec)}</optgroup>
+            <optgroup label="瓦斯窯">${mkO(gas)}</optgroup>
+          </select>
+        </div>
+        <div class="uc ucg"><label>換算基準 (g)</label>
+          <div class="gw">
+            <button class="gs" id="tsm">−</button>
+            <input class="gi" type="number" id="ts-scale" value="${TS.scale}" onfocus="this.select()">
+            <span class="gu">g</span>
+            <button class="gs" id="tsp">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    ${rows.length?`
+      <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:6px;padding:0 2px;margin-bottom:6px">
+        <span style="font-size:10px;color:var(--ink3)">原料</span>
+        <span style="font-size:10px;color:var(--ink3);text-align:right">參考 g</span>
+        <span style="font-size:10px;color:var(--ink3);text-align:right">實際 g</span>
+      </div>
+      ${rows.map((row,i)=>`<div style="display:grid;grid-template-columns:1fr 80px 80px;gap:6px;margin-bottom:6px;align-items:center" id="tsr-${i}">
+        <span style="font-size:13px">${row.name}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--ink3);text-align:right">${row.base}g</span>
+        <input id="tsv-${i}" type="number" value="${row.g!==''?row.g:row.base}" style="height:36px;font-size:13px;text-align:right" placeholder="${row.base}">
+      </div>`).join('')}
+      <div class="fld" style="margin-top:12px"><label>試釉名稱（選填）</label><input id="ts-name" value="${TS.name}" placeholder="例：X0Y2 增鋅版"></div>
+      <div class="fe">
+        <button class="btn bsg" id="ts-rec">記錄（不扣庫存）</button>
+        <button class="btn bcl" id="ts-ded">記錄並扣庫存</button>
+      </div>`:'<div class="empty" style="padding:2rem">請先選擇基底配方</div>'}`;
+  } else {
+    // 自由調配
+    if(!G.FR)G.FR={rows:[{mid:'',g:''}],name:''};
+    const FR=G.FR,mats=S.materials;
+    body=`<div class="fld"><label>試釉名稱（選填）</label><input id="fr-name" value="${FR.name}" placeholder="例：自訂青瓷 #1"></div>
+      <div style="display:grid;grid-template-columns:1fr 90px;gap:6px;margin-bottom:6px">
+        <span style="font-size:10px;color:var(--ink3)">原料</span>
+        <span style="font-size:10px;color:var(--ink3);text-align:right">克數 g</span>
+      </div>
+      ${FR.rows.map((row,i)=>`<div style="display:grid;grid-template-columns:1fr 90px 24px;gap:6px;margin-bottom:6px;align-items:center" id="frr-${i}">
+        <select id="frm-${i}">${mats.map(m=>`<option value="${m.id}"${m.id===row.mid?' selected':''}>${m.name}</option>`).join('')}</select>
+        <input id="frv-${i}" type="number" value="${row.g||''}" style="height:36px;font-size:13px;text-align:right" placeholder="克">
+        <button class="ib dn" id="frdel-${i}">${I.tr}</button>
+      </div>`).join('')}
+      <button class="btn bsm" id="fr-add" style="margin-bottom:14px">+ 新增原料</button>
+      <div class="fld"><label>備註</label><input id="fr-note" value="${FR.note||''}" placeholder="調整原因、觀察…"></div>
+      <div class="fe">
+        <button class="btn bsg" id="fr-rec">記錄（不扣庫存）</button>
+        <button class="btn bcl" id="fr-ded">記錄並扣庫存</button>
+      </div>`;
+  }
+
+  document.getElementById('t-use').innerHTML=pendHTML+subNav+body;
+
+  // 子頁籤切換
+  ['recipe','base','free'].forEach(t=>{
+    const b=document.getElementById('st-'+t);
+    if(b)b.onclick=()=>{G.USE_TAB=t;rUse();};
   });
-  bd.forEach((b,i)=>{const row=document.getElementById('mr'+i);if(row)row.onclick=()=>{G.US.ck[b.id]=!G.US.ck[b.id];rUse();};});
-  const cka=document.getElementById('cka');if(cka)cka.onclick=()=>{const r=G.S.recipes.find(r=>r.id===G.US.rid);if(r)r.ingredients.forEach(i=>G.US.ck[i.materialId]=true);rUse();};
-  const uuEl=document.getElementById('uu');if(uuEl)uuEl.oninput=function(){G.US.user=this.value;};
-  const unEl=document.getElementById('un');if(unEl)unEl.oninput=function(){G.US.note=this.value;};
-  const du=document.getElementById('du'),sp=document.getElementById('sp');
-  if(du)du.onclick=doUse;if(sp)sp.onclick=savePend;
-  const otBtn=document.getElementById('open-test');
-  if(otBtn)otBtn.onclick=openTest;
+
+  if(tab==='recipe'){
+    const rsel=document.getElementById('rsel');
+    rsel.value=US.rid||'';
+    rsel.onchange=function(){G.US.rid=this.value;G.US.ck={};rUse();};
+    document.getElementById('gi').oninput=function(){G.US.g=this.value;rUse();};
+    document.getElementById('gm').onclick=()=>stepG(-100);
+    document.getElementById('gp').onclick=()=>stepG(100);
+    const qw=document.getElementById('qgw');
+    [3000,5000].forEach(v=>{
+      const b=document.createElement('button');b.className='qb'+(US.g==v?' on':'');b.textContent=v+'g';
+      b.onclick=()=>{G.US.g=v;rUse();};qw.appendChild(b);
+    });
+    const rec=S.recipes.find(r=>r.id===US.rid),g=parseFloat(US.g)||0;
+    let bd2=[];
+    if(rec&&g>0){
+      const tot=rec.ingredients.reduce((a,i)=>a+i.pct,0);
+      bd2=rec.ingredients.map(ing=>{const mat=S.materials.find(m=>m.id===ing.materialId);const need=Math.round(g*ing.pct/tot*10)/10;const ok=!mat||!mat.tracked||(mat.qty>=need);return{id:ing.materialId,mat,need,ok};});
+    }
+    bd2.forEach((b,i)=>{const row=document.getElementById('mr'+i);if(row)row.onclick=()=>{G.US.ck[b.id]=!G.US.ck[b.id];rUse();};});
+    const cka=document.getElementById('cka');if(cka)cka.onclick=()=>{const r=G.S.recipes.find(r=>r.id===G.US.rid);if(r)r.ingredients.forEach(i=>G.US.ck[i.materialId]=true);rUse();};
+    const du=document.getElementById('du'),sp=document.getElementById('sp');
+    if(du)du.onclick=doUse;if(sp)sp.onclick=savePend;
+  } else if(tab==='base'){
+    const TS=G.TS;
+    const bsel=document.getElementById('ts-base');
+    if(bsel){
+      bsel.onchange=function(){
+        TS.baseRid=this.value;
+        if(this.value){
+          const rec=S.recipes.find(r=>r.id===this.value);
+          if(rec){
+            const tot=rec.ingredients.reduce((a,i)=>a+i.pct,0);
+            TS.rows=rec.ingredients.map(ing=>({
+              mid:ing.materialId,
+              name:ing.materialId,
+              base:Math.round(TS.scale*ing.pct/tot*10)/10,
+              g:''
+            }));
+          }
+        } else {TS.rows=[];}
+        rUse();
+      };
+    }
+    const scEl=document.getElementById('ts-scale');
+    if(scEl){
+      scEl.oninput=function(){
+        TS.scale=parseFloat(this.value)||100;
+        if(TS.baseRid){
+          const rec=S.recipes.find(r=>r.id===TS.baseRid);
+          if(rec){const tot=rec.ingredients.reduce((a,i)=>a+i.pct,0);TS.rows.forEach(row=>{const ing=rec.ingredients.find(i=>i.materialId===row.mid);if(ing)row.base=Math.round(TS.scale*ing.pct/tot*10)/10;});}
+        }
+        rUse();
+      };
+    }
+    const tsm=document.getElementById('tsm'),tsp=document.getElementById('tsp');
+    if(tsm)tsm.onclick=()=>{const el=document.getElementById('ts-scale');if(el){TS.scale=Math.max(10,(parseFloat(el.value)||100)-50);rUse();}};
+    if(tsp)tsp.onclick=()=>{const el=document.getElementById('ts-scale');if(el){TS.scale=(parseFloat(el.value)||100)+50;rUse();}};
+    // sync row values
+    const syncTS=()=>{if(TS.rows)TS.rows.forEach((_,i)=>{const el=document.getElementById('tsv-'+i);if(el)TS.rows[i].g=el.value;});const n=document.getElementById('ts-name');if(n)TS.name=n.value;};
+    const tsRecBtn=document.getElementById('ts-rec'),tsDedBtn=document.getElementById('ts-ded');
+    if(tsRecBtn)tsRecBtn.onclick=()=>{syncTS();doBaseTest(false);};
+    if(tsDedBtn)tsDedBtn.onclick=()=>{syncTS();doBaseTest(true);};
+    const tsNameEl=document.getElementById('ts-name');
+    if(tsNameEl)tsNameEl.oninput=function(){TS.name=this.value;};
+  } else {
+    const FR=G.FR,mats=S.materials;
+    const syncFR=()=>{FR.rows.forEach((_,i)=>{const ms=document.getElementById('frm-'+i);const vl=document.getElementById('frv-'+i);if(ms)FR.rows[i].mid=ms.value;if(vl)FR.rows[i].g=vl.value;});const n=document.getElementById('fr-name');if(n)FR.name=n.value;const nt=document.getElementById('fr-note');if(nt)FR.note=nt.value;};
+    FR.rows.forEach((_,i)=>{
+      const ms=document.getElementById('frm-'+i);const vl=document.getElementById('frv-'+i);const dl=document.getElementById('frdel-'+i);
+      if(ms)ms.onchange=function(){FR.rows[i].mid=this.value;};
+      if(vl)vl.oninput=function(){FR.rows[i].g=this.value;};
+      if(dl)dl.onclick=()=>{syncFR();FR.rows.splice(i,1);if(!FR.rows.length)FR.rows=[{mid:'',g:''}];rUse();};
+    });
+    const addBtn=document.getElementById('fr-add');if(addBtn)addBtn.onclick=()=>{syncFR();FR.rows.push({mid:'',g:''});rUse();};
+    const frNameEl=document.getElementById('fr-name');if(frNameEl)frNameEl.oninput=function(){FR.name=this.value;};
+    const frNoteEl=document.getElementById('fr-note');if(frNoteEl)frNoteEl.oninput=function(){FR.note=this.value;};
+    const frRecBtn=document.getElementById('fr-rec'),frDedBtn=document.getElementById('fr-ded');
+    if(frRecBtn)frRecBtn.onclick=()=>{syncFR();doFreeTest(false);};
+    if(frDedBtn)frDedBtn.onclick=()=>{syncFR();doFreeTest(true);};
+  }
+}
+
+function doBaseTest(deduct){
+  const TS=G.TS,S=G.S;
+  if(!TS||!TS.rows||!TS.rows.length){alert('請先選擇基底配方');return;}
+  const validRows=TS.rows.map(row=>({mid:row.mid,g:parseFloat(row.g)>0?parseFloat(row.g):parseFloat(row.base)||0})).filter(r=>r.g>0);
+  if(!validRows.length){alert('請填入克數');return;}
+  const totalG=Math.round(validRows.reduce((a,r)=>a+r.g,0)*10)/10;
+  const bd=validRows.map(r=>{
+    if(deduct){const mat=S.materials.find(m=>m.id===r.mid);if(mat&&mat.tracked)mat.qty=Math.round((mat.qty-r.g)*10)/10;}
+    return{materialId:r.mid,grams:r.g};
+  });
+  const recName=TS.name||(TS.baseRid?TS.baseRid+' 試釉':'試釉');
+  S.log.unshift({id:'l'+Date.now(),date:new Date().toISOString().slice(0,10),type:'test',recipeId:TS.baseRid||'TEST',recipeName:recName,totalGrams:totalG,breakdown:bd,isTest:true,deducted:deduct});
+  G.TS={baseRid:'',scale:100,rows:[],name:''};
+  save();toast(deduct?'試釉記錄完成，庫存已扣除':'試釉記錄完成');
+}
+function doFreeTest(deduct){
+  const FR=G.FR,S=G.S;
+  if(!FR||!FR.rows)return;
+  const validRows=FR.rows.filter(r=>r.mid&&parseFloat(r.g)>0);
+  if(!validRows.length){alert('請至少填入一種原料和克數');return;}
+  const totalG=Math.round(validRows.reduce((a,r)=>a+parseFloat(r.g),0)*10)/10;
+  const bd=validRows.map(r=>{
+    const g=parseFloat(r.g);
+    if(deduct){const mat=S.materials.find(m=>m.id===r.mid);if(mat&&mat.tracked)mat.qty=Math.round((mat.qty-g)*10)/10;}
+    return{materialId:r.mid,grams:g};
+  });
+  const recName=FR.name||'自由試釉';
+  S.log.unshift({id:'l'+Date.now(),date:new Date().toISOString().slice(0,10),type:'test',recipeId:'FREE',recipeName:recName,totalGrams:totalG,note:FR.note||'',breakdown:bd,isTest:true,deducted:deduct});
+  G.FR={rows:[{mid:'',g:''}],name:'',note:''};
+  save();toast(deduct?'試釉記錄完成，庫存已扣除':'試釉記錄完成');
 }
 function stepG(d){const v=Math.max(0,(parseFloat(G.US.g)||0)+d);G.US.g=v;const e=document.getElementById('gi');if(e)e.value=v;rUse();}
 function doUse(){
@@ -520,7 +693,7 @@ function doUse(){
     if(mat&&mat.tracked)mat.qty=Math.round((mat.qty-need)*10)/10;
     return{materialId:ing.materialId,grams:need};
   });
-  S.log.unshift({id:'l'+Date.now(),date:new Date().toISOString().slice(0,10),type:'use',recipeId:rec.id,recipeName:rec.name,totalGrams:g,user:US.user,note:US.note,breakdown:bd});
+  S.log.unshift({id:'l'+Date.now(),date:new Date().toISOString().slice(0,10),type:'use',recipeId:rec.id,recipeName:rec.name,totalGrams:g,breakdown:bd});
   G.US={rid:'',g:3000,user:'',note:'',ck:{}};save();toast('調配完成');
 }
 function savePend(){
@@ -534,10 +707,7 @@ function savePend(){
 }
 
 /* ── 試釉 ── */
-function openTest(){
-  G.TS={mode:'base',baseRid:'',scale:100,rows:[],user:G.US.user||'',note:'',name:''};
-  rTestModal();
-}
+
 
 function calcRows(){
   // 依據基底配方 + scale 計算預設克數
@@ -556,172 +726,11 @@ function calcRows(){
   return TS.rows.length?TS.rows:[{mid:'',base:0,g:''}];
 }
 
-function syncRows(){
-  const rows=G.TS.rows;
-  rows.forEach((_,i)=>{
-    const inp=document.getElementById('tg-'+i);
-    if(inp)rows[i].g=inp.value;
-  });
-  const nameEl=document.getElementById('t-name');if(nameEl)G.TS.name=nameEl.value;
-  const userEl=document.getElementById('t-user');if(userEl)G.TS.user=userEl.value;
-  const noteEl=document.getElementById('t-note');if(noteEl)G.TS.note=noteEl.value;
-  const scEl=document.getElementById('t-scale');if(scEl)G.TS.scale=parseFloat(scEl.value)||100;
-}
 
-function rTestModal(){
-  const TS=G.TS,S=G.S;
-  const mats=S.materials;
-  const elec=S.recipes.filter(r=>r.kiln==='電窯'),gas=S.recipes.filter(r=>r.kiln==='瓦斯窯');
-  const mkO=arr=>arr.map(r=>`<option value="${r.id}"${TS.baseRid===r.id?' selected':''}>${r.id} — ${r.name}</option>`).join('');
 
-  // 若 rows 空且有基底配方，先計算
-  if(!TS.rows.length&&TS.baseRid) TS.rows=calcRows();
-  const rows=TS.rows;
 
-  modal(`<div class="md">
-    <div class="mt2" style="margin-bottom:.75rem">試釉記錄</div>
-    <div style="display:flex;gap:6px;margin-bottom:14px">
-      <button class="btn bsm${TS.mode==='base'?' bdk':''}" id="tm-base">以配方為基底</button>
-      <button class="btn bsm${TS.mode==='free'?' bdk':''}" id="tm-free">自由配方</button>
-    </div>
 
-    ${TS.mode==='base'?`<div class="g2" style="margin-bottom:12px">
-      <div class="fld" style="margin:0"><label>基底配方</label>
-        <select id="t-base-sel">
-          <option value="">— 選擇配方 —</option>
-          <optgroup label="電窯">${mkO(elec)}</optgroup>
-          <optgroup label="瓦斯窯">${mkO(gas)}</optgroup>
-        </select>
-      </div>
-      <div class="fld" style="margin:0"><label>換算基準（g）</label>
-        <input id="t-scale" type="number" value="${TS.scale||100}" min="1" style="text-align:right">
-      </div>
-    </div>`:''}
 
-    ${TS.mode==='base'&&TS.baseRid?`
-    <div style="font-size:11px;color:var(--ink3);margin-bottom:10px;padding:8px 12px;background:var(--paper2);border-radius:var(--r)">
-      依 ${TS.scale}g 換算的參考克數已帶入，可直接調整後記錄
-    </div>`:''}
-
-    <div style="display:grid;grid-template-columns:1fr 72px 72px 24px;gap:6px;padding:0 2px;margin-bottom:4px">
-      <span style="font-size:10px;color:var(--ink3)">原料</span>
-      <span style="font-size:10px;color:var(--ink3);text-align:right">${TS.mode==='base'&&TS.baseRid?'參考 (g)':''}</span>
-      <span style="font-size:10px;color:var(--ink3);text-align:right">實際 (g)</span>
-      <span></span>
-    </div>
-    <div id="t-rows">
-      ${rows.map((row,i)=>{
-        const matName=mats.find(m=>m.id===row.mid)?.name||row.mid;
-        return`<div style="display:grid;grid-template-columns:1fr 72px 72px 24px;gap:6px;margin-bottom:6px;align-items:center" id="tr-${i}">
-          ${TS.mode==='base'&&TS.baseRid
-            ?`<span style="font-size:13px;color:var(--ink)">${matName}</span>`
-            :`<select id="tm-${i}">${mats.map(m=>`<option value="${m.id}"${m.id===row.mid?' selected':''}>${m.name}</option>`).join('')}</select>`
-          }
-          <span style="font-size:12px;color:var(--ink3);text-align:right;font-family:'DM Mono',monospace">${row.base?row.base+'g':''}</span>
-          <input id="tg-${i}" type="number" value="${row.g||row.base||''}" style="text-align:right;height:36px;font-size:13px" placeholder="${row.base||''}">
-          <button class="ib dn" id="trm-${i}" style="width:24px;height:24px">${I.tr}</button>
-        </div>`;
-      }).join('')}
-    </div>
-    ${TS.mode==='free'?`<button class="btn bsm" id="t-add-row" style="margin-bottom:12px">+ 新增原料</button>`:''}
-
-    <div style="border-top:1px solid var(--line2);margin:16px 0 14px"></div>
-    <div class="fld"><label>試釉名稱</label><input id="t-name" value="${TS.name}" placeholder="選填，例：X0Y2 增鋅版"></div>
-    <div class="g2">
-      <div class="fld" style="margin:0"><label>操作者</label><input id="t-user" value="${TS.user}" placeholder="你的名字"></div>
-      <div class="fld" style="margin:0"><label>備註</label><input id="t-note" value="${TS.note}" placeholder="調整原因、觀察…"></div>
-    </div>
-    <div class="fe" style="margin-top:18px">
-      <button class="btn" id="t-cancel">取消</button>
-      <button class="btn bsg" id="t-save-only">記錄（不扣庫存）</button>
-      <button class="btn bcl" id="t-save-deduct">記錄並扣庫存</button>
-    </div>
-  </div>`);
-
-  // 模式切換
-  document.getElementById('tm-base').onclick=()=>{G.TS.mode='base';G.TS.rows=[];rTestModal();};
-  document.getElementById('tm-free').onclick=()=>{G.TS.mode='free';G.TS.baseRid='';G.TS.rows=[{mid:'',base:0,g:''}];rTestModal();};
-
-  // 基底配方選擇
-  const bsel=document.getElementById('t-base-sel');
-  if(bsel){
-    bsel.onchange=function(){
-      syncRows();
-      G.TS.baseRid=this.value;
-      G.TS.rows=calcRows();
-      rTestModal();
-    };
-  }
-
-  // 換算基準輸入
-  const scEl=document.getElementById('t-scale');
-  if(scEl){
-    scEl.oninput=function(){
-      G.TS.scale=parseFloat(this.value)||100;
-      G.TS.rows=calcRows();
-      rTestModal();
-    };
-  }
-
-  // 原料行（自由模式可改 select；基底模式只改克數）
-  rows.forEach((_,i)=>{
-    const sel=document.getElementById('tm-'+i);
-    const inp=document.getElementById('tg-'+i);
-    const rmb=document.getElementById('trm-'+i);
-    if(sel)sel.onchange=function(){rows[i].mid=this.value;};
-    if(inp)inp.oninput=function(){rows[i].g=this.value;};
-    if(rmb)rmb.onclick=()=>{
-      syncRows();
-      G.TS.rows.splice(i,1);
-      if(!G.TS.rows.length)G.TS.rows=[{mid:'',base:0,g:''}];
-      rTestModal();
-    };
-  });
-
-  const addRowBtn=document.getElementById('t-add-row');
-  if(addRowBtn)addRowBtn.onclick=()=>{syncRows();G.TS.rows.push({mid:'',base:0,g:''});rTestModal();};
-
-  document.getElementById('t-name').oninput=function(){G.TS.name=this.value;};
-  document.getElementById('t-user').oninput=function(){G.TS.user=this.value;};
-  document.getElementById('t-note').oninput=function(){G.TS.note=this.value;};
-  document.getElementById('t-cancel').onclick=cModal;
-  document.getElementById('t-save-only').onclick=()=>doTest(false);
-  document.getElementById('t-save-deduct').onclick=()=>doTest(true);
-}
-
-function doTest(deduct){
-  syncRows();
-  const TS=G.TS,S=G.S;
-  const validRows=TS.rows.filter(r=>r.mid&&parseFloat(r.g)>0);
-  if(!validRows.length){alert('請至少填入一種原料和克數');return;}
-  const totalG=validRows.reduce((a,r)=>a+parseFloat(r.g),0);
-  const bd=validRows.map(r=>{
-    const g=parseFloat(r.g);
-    if(deduct){const mat=S.materials.find(m=>m.id===r.mid);if(mat&&mat.tracked)mat.qty=Math.round((mat.qty-g)*10)/10;}
-    return{materialId:r.mid,grams:g};
-  });
-  const baseRec=TS.baseRid?S.recipes.find(r=>r.id===TS.baseRid):null;
-  const autoName=TS.baseRid?(TS.baseRid+' 試釉'):'自由試釉';
-  const recName=TS.name||autoName;
-  S.log.unshift({
-    id:'l'+Date.now(),
-    date:new Date().toISOString().slice(0,10),
-    type:'test',
-    recipeId:TS.baseRid||'TEST',
-    recipeName:recName,
-    totalGrams:Math.round(totalG*10)/10,
-    user:TS.user,
-    note:TS.note,
-    breakdown:bd,
-    isTest:true,
-    deducted:deduct,
-    baseRecipe:baseRec?baseRec.name:null
-  });
-  cModal();
-  G.US.user=TS.user; // 保留操作者名字
-  save();
-  toast(deduct?'試釉記錄完成，庫存已扣除':'試釉記錄完成');
-}
 
 function rPending(){
   const S=G.S;
