@@ -430,22 +430,20 @@ function rUse(){
   const canDo=rec&&g>0&&!hasI&&allCk,canPend=!!(rec&&g>0);
   const elec=S.recipes.filter(r=>r.kiln==='電窯'),gas=S.recipes.filter(r=>r.kiln==='瓦斯窯');
   document.getElementById('t-use').innerHTML=`
-    ${S.pending.length?`<div style="margin-bottom:1.25rem"><div class="lbl">待補料清單</div>
+    ${S.pending.length?`<div style="margin-bottom:1.25rem">
       ${S.pending.map(p=>`<div class="upc">
         <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
             <span class="rid">${p.recipeId}</span>
             <span style="font-size:13px;font-weight:500;color:var(--amber)">${p.recipeName}</span>
-            <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--amber)">${p.totalGrams}g</span>
+            ${p.missing.map(m=>`<span class="mt">缺 ${m.materialId}</span>`).join('')}
           </div>
-          <div>${p.missing.map(m=>`<span class="mt">缺 ${m.materialId} ${m.need}g</span>`).join('')}</div>
         </div>
-        <button class="btn bsm bdk" data-act="pgo" data-pid="${p.id}" style="flex-shrink:0">繼續調配</button>
+        <button class="btn bsm bdk" data-act="pgo" data-pid="${p.id}" style="flex-shrink:0">繼續</button>
       </div>`).join('')}
     </div>`:''}
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div class="lbl" style="margin:0">一般調配</div>
-      <button class="btn bsm" id="open-test">🧪 試釉記錄</button>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+      <button class="btn bsm" id="open-test">試釉記錄</button>
     </div>
     <div class="uh"><div class="ut">
       <div class="uc"><label>釉藥配方</label>
@@ -471,31 +469,24 @@ function rUse(){
     </div>`:''}
     </div>
     ${rec&&g>0?`
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div class="lbl" style="margin:0">${bd.length} 種原料</div>
+      ${hasI?'<div class="bar ber" style="margin-bottom:10px">部分原料庫存不足</div>':allCk?'<div class="bar bok2" style="margin-bottom:10px">可以調配</div>':''}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:11px;color:var(--ink3)">${bd.length} 種原料</span>
         <button class="btn bsm" id="cka">全部勾選</button>
       </div>
-      ${hasI?'<div class="bar ber">部分原料庫存不足</div>':allCk?'<div class="bar bok2">可以調配</div>':'<div class="bar bwn">請逐一確認並勾選每種原料</div>'}
-      <div style="display:flex;gap:10px;padding:0 14px;margin-bottom:5px">
-        <div style="flex:1"></div>
-        <span style="font-size:10px;color:var(--ink3);width:36px;text-align:right">比例</span>
-        <span style="font-size:10px;color:var(--ink3);width:52px;text-align:right">需要</span>
-        <span style="font-size:10px;color:var(--ink3);width:70px;text-align:right">庫存</span>
-        <span style="width:18px"></span>
-      </div>
       ${bd.map((b,i)=>`<div class="mr${b.ok?'':' ins'}${US.ck[b.id]?' ck':''}" id="mr${i}">
-        <div class="chk"></div><span class="mn">${b.id}</span>
-        <span class="mp">${b.pct}%</span><span class="mnd">${b.need}g</span>
-        <span style="font-size:11px;width:70px;text-align:right;color:var(--ink3)">${b.mat&&b.mat.tracked?b.mat.qty+'g':'—'}</span>
-        <span style="width:18px;text-align:center;font-size:12px;color:var(--red)">${b.ok?'':'!'}</span>
+        <div class="chk"></div>
+        <span class="mn">${b.id}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:500;margin-left:auto">${b.need}g</span>
+        ${b.mat&&b.mat.tracked?`<span style="font-size:11px;color:${b.ok?'var(--ink3)':'var(--red)'};min-width:54px;text-align:right">${b.ok?b.mat.qty+'g':'庫存不足'}</span>`:'<span style="font-size:11px;color:var(--ink3);min-width:54px;text-align:right">—</span>'}
       </div>`).join('')}
-      <div class="g2" style="margin-top:16px">
-        <div class="fld" style="margin:0"><label>操作者</label><input id="uu" value="${US.user}" placeholder="你的名字"></div>
-        <div class="fld" style="margin:0"><label>備註</label><input id="un" value="${US.note}" placeholder="例：茶杯 10 個"></div>
+      <div class="g2" style="margin-top:12px">
+        <div style="margin:0"><input id="uu" value="${US.user}" placeholder="操作者" style="height:38px;font-size:13px"></div>
+        <div style="margin:0"><input id="un" value="${US.note}" placeholder="備註" style="height:38px;font-size:13px"></div>
       </div>
       <div class="fe">
-        <button class="btn bwarn" id="sp" ${canPend?'':'disabled'}>⏸ 列入待補料</button>
-        <button class="btn bcl" id="du" ${canDo?'':'disabled'}>確認調配，扣除庫存</button>
+        ${canPend?`<button class="btn bwarn bsm" id="sp">列入待補料</button>`:''}
+        <button class="btn bcl" id="du" ${canDo?'':'disabled'}>確認調配</button>
       </div>
     `:''}`;
   const rsel=document.getElementById('rsel');
@@ -544,114 +535,158 @@ function savePend(){
 
 /* ── 試釉 ── */
 function openTest(){
-  G.TS={mode:'base',baseRid:'',rows:[{mid:'',g:''}],user:G.US.user||'',note:'',name:''};
+  G.TS={mode:'base',baseRid:'',scale:100,rows:[],user:G.US.user||'',note:'',name:''};
   rTestModal();
 }
+
+function calcRows(){
+  // 依據基底配方 + scale 計算預設克數
+  const TS=G.TS,S=G.S;
+  if(TS.mode==='base'&&TS.baseRid){
+    const rec=S.recipes.find(r=>r.id===TS.baseRid);
+    if(rec){
+      const tot=rec.ingredients.reduce((a,i)=>a+i.pct,0);
+      return rec.ingredients.map(ing=>({
+        mid:ing.materialId,
+        base:Math.round(TS.scale*ing.pct/tot*10)/10, // 按比例換算的基準克數
+        g:'' // 人員自行填寫實際克數，空白=使用 base
+      }));
+    }
+  }
+  return TS.rows.length?TS.rows:[{mid:'',base:0,g:''}];
+}
+
+function syncRows(){
+  const rows=G.TS.rows;
+  rows.forEach((_,i)=>{
+    const inp=document.getElementById('tg-'+i);
+    if(inp)rows[i].g=inp.value;
+  });
+  const nameEl=document.getElementById('t-name');if(nameEl)G.TS.name=nameEl.value;
+  const userEl=document.getElementById('t-user');if(userEl)G.TS.user=userEl.value;
+  const noteEl=document.getElementById('t-note');if(noteEl)G.TS.note=noteEl.value;
+  const scEl=document.getElementById('t-scale');if(scEl)G.TS.scale=parseFloat(scEl.value)||100;
+}
+
 function rTestModal(){
   const TS=G.TS,S=G.S;
   const mats=S.materials;
   const elec=S.recipes.filter(r=>r.kiln==='電窯'),gas=S.recipes.filter(r=>r.kiln==='瓦斯窯');
   const mkO=arr=>arr.map(r=>`<option value="${r.id}"${TS.baseRid===r.id?' selected':''}>${r.id} — ${r.name}</option>`).join('');
 
-  // 當選了基底配方時，自動填入原料行
-  let rows=TS.rows;
+  // 若 rows 空且有基底配方，先計算
+  if(!TS.rows.length&&TS.baseRid) TS.rows=calcRows();
+  const rows=TS.rows;
 
   modal(`<div class="md">
-    <div class="mt2">🧪 試釉記錄</div>
-    <div style="display:flex;gap:6px;margin-bottom:16px">
+    <div class="mt2" style="margin-bottom:.75rem">試釉記錄</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">
       <button class="btn bsm${TS.mode==='base'?' bdk':''}" id="tm-base">以配方為基底</button>
       <button class="btn bsm${TS.mode==='free'?' bdk':''}" id="tm-free">自由配方</button>
     </div>
-    ${TS.mode==='base'?`
-      <div class="fld"><label>基底配方</label>
+
+    ${TS.mode==='base'?`<div class="g2" style="margin-bottom:12px">
+      <div class="fld" style="margin:0"><label>基底配方</label>
         <select id="t-base-sel">
           <option value="">— 選擇配方 —</option>
           <optgroup label="電窯">${mkO(elec)}</optgroup>
           <optgroup label="瓦斯窯">${mkO(gas)}</optgroup>
         </select>
-      </div>`:''}
-    <div class="fld"><label>試釉名稱（選填，例：X0Y2 加鋅版）</label><input id="t-name" value="${TS.name}" placeholder="不填則自動產生"></div>
-    <div style="font-size:12px;font-weight:500;margin:0 0 8px;color:var(--ink2)">原料明細（直接填克數）</div>
-    <div style="display:flex;gap:8px;padding:0 2px;margin-bottom:6px">
-      <span style="font-size:10px;color:var(--ink3);flex:2">原料</span>
-      <span style="font-size:10px;color:var(--ink3);width:80px;text-align:right">克數 (g)</span>
-      <span style="width:28px"></span>
+      </div>
+      <div class="fld" style="margin:0"><label>換算基準（g）</label>
+        <input id="t-scale" type="number" value="${TS.scale||100}" min="1" style="text-align:right">
+      </div>
+    </div>`:''}
+
+    ${TS.mode==='base'&&TS.baseRid?`
+    <div style="font-size:11px;color:var(--ink3);margin-bottom:10px;padding:8px 12px;background:var(--paper2);border-radius:var(--r)">
+      依 ${TS.scale}g 換算的參考克數已帶入，可直接調整後記錄
+    </div>`:''}
+
+    <div style="display:grid;grid-template-columns:1fr 72px 72px 24px;gap:6px;padding:0 2px;margin-bottom:4px">
+      <span style="font-size:10px;color:var(--ink3)">原料</span>
+      <span style="font-size:10px;color:var(--ink3);text-align:right">${TS.mode==='base'&&TS.baseRid?'參考 (g)':''}</span>
+      <span style="font-size:10px;color:var(--ink3);text-align:right">實際 (g)</span>
+      <span></span>
     </div>
     <div id="t-rows">
-      ${rows.map((row,i)=>`<div class="ingr" id="tr-${i}">
-        <select id="tm-${i}" style="flex:2">${mats.map(m=>`<option value="${m.id}"${m.id===row.mid?' selected':''}>${m.name}</option>`).join('')}</select>
-        <input id="tg-${i}" type="number" placeholder="克" value="${row.g||''}" style="width:80px!important;text-align:right">
-        <button class="btn bsm bdan" style="width:28px;padding:0;text-align:center" id="trm-${i}">✕</button>
-      </div>`).join('')}
+      ${rows.map((row,i)=>{
+        const matName=mats.find(m=>m.id===row.mid)?.name||row.mid;
+        return`<div style="display:grid;grid-template-columns:1fr 72px 72px 24px;gap:6px;margin-bottom:6px;align-items:center" id="tr-${i}">
+          ${TS.mode==='base'&&TS.baseRid
+            ?`<span style="font-size:13px;color:var(--ink)">${matName}</span>`
+            :`<select id="tm-${i}">${mats.map(m=>`<option value="${m.id}"${m.id===row.mid?' selected':''}>${m.name}</option>`).join('')}</select>`
+          }
+          <span style="font-size:12px;color:var(--ink3);text-align:right;font-family:'DM Mono',monospace">${row.base?row.base+'g':''}</span>
+          <input id="tg-${i}" type="number" value="${row.g||row.base||''}" style="text-align:right;height:36px;font-size:13px" placeholder="${row.base||''}">
+          <button class="ib dn" id="trm-${i}" style="width:24px;height:24px">${I.tr}</button>
+        </div>`;
+      }).join('')}
     </div>
-    <button class="btn bsm" id="t-add-row" style="margin-bottom:14px">+ 新增原料</button>
-    <div class="g2">
-      <div class="fld"><label>操作者</label><input id="t-user" value="${TS.user}" placeholder="你的名字"></div>
-      <div class="fld"><label>備註（調整原因、觀察等）</label><input id="t-note" value="${TS.note}" placeholder="例：增加氧化鋅測試結晶"></div>
+    ${TS.mode==='free'?`<button class="btn bsm" id="t-add-row" style="margin-bottom:12px">+ 新增原料</button>`:''}
+
+    <div class="g2" style="margin-top:8px">
+      <div class="fld" style="margin:0"><label>試釉名稱（選填）</label><input id="t-name" value="${TS.name}" placeholder="例：X0Y2 增鋅版"></div>
+      <div class="fld" style="margin:0"><label>操作者</label><input id="t-user" value="${TS.user}" placeholder="你的名字"></div>
     </div>
-    <div style="background:var(--paper2);border-radius:var(--r);padding:10px 12px;margin-bottom:14px;font-size:12px;color:var(--ink3)">
-      試釉記錄會存入使用記錄，標注「試釉」；扣除庫存為選填。
-    </div>
+    <div class="fld" style="margin-top:10px"><label>備註</label><input id="t-note" value="${TS.note}" placeholder="調整原因、觀察…"></div>
+
     <div class="fe">
       <button class="btn" id="t-cancel">取消</button>
-      <button class="btn bsg" id="t-save-only">只記錄（不扣庫存）</button>
+      <button class="btn bsg" id="t-save-only">記錄（不扣庫存）</button>
       <button class="btn bcl" id="t-save-deduct">記錄並扣庫存</button>
     </div>
   </div>`);
 
   // 模式切換
-  document.getElementById('tm-base').onclick=()=>{G.TS.mode='base';syncRows();rTestModal();};
-  document.getElementById('tm-free').onclick=()=>{G.TS.mode='free';G.TS.baseRid='';syncRows();rTestModal();};
+  document.getElementById('tm-base').onclick=()=>{G.TS.mode='base';G.TS.rows=[];rTestModal();};
+  document.getElementById('tm-free').onclick=()=>{G.TS.mode='free';G.TS.baseRid='';G.TS.rows=[{mid:'',base:0,g:''}];rTestModal();};
 
   // 基底配方選擇
   const bsel=document.getElementById('t-base-sel');
   if(bsel){
     bsel.onchange=function(){
+      syncRows();
       G.TS.baseRid=this.value;
-      if(this.value){
-        const rec=S.recipes.find(r=>r.id===this.value);
-        if(rec){
-          // 用配方原料預填，但克數清空讓用戶自己填
-          G.TS.rows=rec.ingredients.map(ing=>({mid:ing.materialId,g:''}));
-        }
-      } else {
-        G.TS.rows=[{mid:'',g:''}];
-      }
+      G.TS.rows=calcRows();
       rTestModal();
     };
   }
 
-  // 原料行
+  // 換算基準輸入
+  const scEl=document.getElementById('t-scale');
+  if(scEl){
+    scEl.oninput=function(){
+      G.TS.scale=parseFloat(this.value)||100;
+      G.TS.rows=calcRows();
+      rTestModal();
+    };
+  }
+
+  // 原料行（自由模式可改 select；基底模式只改克數）
   rows.forEach((_,i)=>{
     const sel=document.getElementById('tm-'+i);
     const inp=document.getElementById('tg-'+i);
     const rmb=document.getElementById('trm-'+i);
-    if(sel)sel.onchange=function(){syncRows();G.TS.rows[i].mid=this.value;};
-    if(inp)inp.oninput=function(){syncRows();G.TS.rows[i].g=this.value;};
-    if(rmb)rmb.onclick=()=>{syncRows();G.TS.rows.splice(i,1);if(!G.TS.rows.length)G.TS.rows=[{mid:'',g:''}];rTestModal();};
+    if(sel)sel.onchange=function(){rows[i].mid=this.value;};
+    if(inp)inp.oninput=function(){rows[i].g=this.value;};
+    if(rmb)rmb.onclick=()=>{
+      syncRows();
+      G.TS.rows.splice(i,1);
+      if(!G.TS.rows.length)G.TS.rows=[{mid:'',base:0,g:''}];
+      rTestModal();
+    };
   });
 
-  document.getElementById('t-add-row').onclick=()=>{syncRows();G.TS.rows.push({mid:'',g:''});rTestModal();};
+  const addRowBtn=document.getElementById('t-add-row');
+  if(addRowBtn)addRowBtn.onclick=()=>{syncRows();G.TS.rows.push({mid:'',base:0,g:''});rTestModal();};
+
   document.getElementById('t-name').oninput=function(){G.TS.name=this.value;};
   document.getElementById('t-user').oninput=function(){G.TS.user=this.value;};
   document.getElementById('t-note').oninput=function(){G.TS.note=this.value;};
   document.getElementById('t-cancel').onclick=cModal;
   document.getElementById('t-save-only').onclick=()=>doTest(false);
   document.getElementById('t-save-deduct').onclick=()=>doTest(true);
-}
-
-function syncRows(){
-  // 把目前 DOM 值同步回 G.TS.rows
-  const rows=G.TS.rows;
-  rows.forEach((_,i)=>{
-    const sel=document.getElementById('tm-'+i);
-    const inp=document.getElementById('tg-'+i);
-    if(sel)rows[i].mid=sel.value;
-    if(inp)rows[i].g=inp.value;
-  });
-  const nameEl=document.getElementById('t-name');if(nameEl)G.TS.name=nameEl.value;
-  const userEl=document.getElementById('t-user');if(userEl)G.TS.user=userEl.value;
-  const noteEl=document.getElementById('t-note');if(noteEl)G.TS.note=noteEl.value;
 }
 
 function doTest(deduct){
