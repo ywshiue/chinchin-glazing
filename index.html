@@ -895,7 +895,7 @@ function rRec(){
 function openRecPanel(id){
   const r=G.S.recipes.find(x=>x.id===id);
   if(!r)return;
-  const W=110,H=160,path=squirclePath(W,H,5);
+  const W=140,H=140,path=squirclePath(W,H,5);
   const max=Math.max(...r.ingredients.map(i=>i.pct));
   const imgU=r.imgUrl||null;
   const colorBlock=imgU
@@ -904,8 +904,8 @@ function openRecPanel(id){
 
   document.getElementById('rec-panel').innerHTML=`
     <div style="display:flex">
-      <div style="width:110px;flex-shrink:0;padding:20px 0 20px 20px">
-        <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:block">${colorBlock}</svg>
+      <div style="width:160px;flex-shrink:0;padding:20px 0 20px 20px;display:flex;align-items:center;justify-content:center">
+        <svg viewBox="0 0 ${W} ${H}" style="display:block;width:${W}px;height:${W}px" xmlns="http://www.w3.org/2000/svg">${colorBlock}</svg>
       </div>
       <div style="padding:20px 18px 16px;flex:1">
         <span style="font-family:'DM Mono',monospace;font-size:17px;font-weight:700;color:#1a1814;display:block;margin-bottom:3px">${r.id}</span>
