@@ -227,7 +227,8 @@ const TABS=['use','pending','dashboard','inventory','recipes','history'];
 const G={
   S:{materials:[],recipes:[],log:[],pending:[]},
   US:{rid:'',g:3000,user:'',note:'',ck:{}},
-  AT:'use',IF:'all',RF:'all',RS:''
+  AT:'use',IF:'all',RF:'all',RS:'',
+  TS:{mode:'base',baseRid:'',rows:[],user:'',note:'',name:''} // 試釉 state
 };
 let saveTimer=null;
 
@@ -442,6 +443,10 @@ function rUse(){
         <button class="btn bsm bdk" data-act="pgo" data-pid="${p.id}" style="flex-shrink:0">繼續調配</button>
       </div>`).join('')}
     </div>`:''}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="lbl" style="margin:0">一般調配</div>
+      <button class="btn bsm" id="open-test">🧪 試釉記錄</button>
+    </div>
     <div class="uh"><div class="ut">
       <div class="uc"><label>釉藥配方</label>
         <select id="rsel"><option value="">— 選擇配方 —</option>
@@ -510,6 +515,8 @@ function rUse(){
   document.getElementById('un').oninput=function(){G.US.note=this.value;};
   const du=document.getElementById('du'),sp=document.getElementById('sp');
   if(du)du.onclick=doUse;if(sp)sp.onclick=savePend;
+  const otBtn=document.getElementById('open-test');
+  if(otBtn)otBtn.onclick=openTest;
 }
 function stepG(d){const v=Math.max(0,(parseFloat(G.US.g)||0)+d);G.US.g=v;const e=document.getElementById('gi');if(e)e.value=v;rUse();}
 function doUse(){
@@ -533,6 +540,152 @@ function savePend(){
     .map(ing=>{const need=Math.round(g*ing.pct/tot*10)/10;const mat=S.materials.find(m=>m.id===ing.materialId);return{materialId:ing.materialId,need,have:mat?mat.qty:0};});
   S.pending.push({id:'p'+Date.now(),date:new Date().toISOString().slice(0,10),recipeId:rec.id,recipeName:rec.name,totalGrams:g,user:US.user,note:US.note,missing});
   G.US={rid:'',g:3000,user:'',note:'',ck:{}};save();toast('已列入待補料');
+}
+
+/* ── 試釉 ── */
+function openTest(){
+  G.TS={mode:'base',baseRid:'',rows:[{mid:'',g:''}],user:G.US.user||'',note:'',name:''};
+  rTestModal();
+}
+function rTestModal(){
+  const TS=G.TS,S=G.S;
+  const mats=S.materials;
+  const elec=S.recipes.filter(r=>r.kiln==='電窯'),gas=S.recipes.filter(r=>r.kiln==='瓦斯窯');
+  const mkO=arr=>arr.map(r=>`<option value="${r.id}"${TS.baseRid===r.id?' selected':''}>${r.id} — ${r.name}</option>`).join('');
+
+  // 當選了基底配方時，自動填入原料行
+  let rows=TS.rows;
+
+  modal(`<div class="md">
+    <div class="mt2">🧪 試釉記錄</div>
+    <div style="display:flex;gap:6px;margin-bottom:16px">
+      <button class="btn bsm${TS.mode==='base'?' bdk':''}" id="tm-base">以配方為基底</button>
+      <button class="btn bsm${TS.mode==='free'?' bdk':''}" id="tm-free">自由配方</button>
+    </div>
+    ${TS.mode==='base'?`
+      <div class="fld"><label>基底配方</label>
+        <select id="t-base-sel">
+          <option value="">— 選擇配方 —</option>
+          <optgroup label="電窯">${mkO(elec)}</optgroup>
+          <optgroup label="瓦斯窯">${mkO(gas)}</optgroup>
+        </select>
+      </div>`:''}
+    <div class="fld"><label>試釉名稱（選填，例：X0Y2 加鋅版）</label><input id="t-name" value="${TS.name}" placeholder="不填則自動產生"></div>
+    <div style="font-size:12px;font-weight:500;margin:0 0 8px;color:var(--ink2)">原料明細（直接填克數）</div>
+    <div style="display:flex;gap:8px;padding:0 2px;margin-bottom:6px">
+      <span style="font-size:10px;color:var(--ink3);flex:2">原料</span>
+      <span style="font-size:10px;color:var(--ink3);width:80px;text-align:right">克數 (g)</span>
+      <span style="width:28px"></span>
+    </div>
+    <div id="t-rows">
+      ${rows.map((row,i)=>`<div class="ingr" id="tr-${i}">
+        <select id="tm-${i}" style="flex:2">${mats.map(m=>`<option value="${m.id}"${m.id===row.mid?' selected':''}>${m.name}</option>`).join('')}</select>
+        <input id="tg-${i}" type="number" placeholder="克" value="${row.g||''}" style="width:80px!important;text-align:right">
+        <button class="btn bsm bdan" style="width:28px;padding:0;text-align:center" id="trm-${i}">✕</button>
+      </div>`).join('')}
+    </div>
+    <button class="btn bsm" id="t-add-row" style="margin-bottom:14px">+ 新增原料</button>
+    <div class="g2">
+      <div class="fld"><label>操作者</label><input id="t-user" value="${TS.user}" placeholder="你的名字"></div>
+      <div class="fld"><label>備註（調整原因、觀察等）</label><input id="t-note" value="${TS.note}" placeholder="例：增加氧化鋅測試結晶"></div>
+    </div>
+    <div style="background:var(--paper2);border-radius:var(--r);padding:10px 12px;margin-bottom:14px;font-size:12px;color:var(--ink3)">
+      試釉記錄會存入使用記錄，標注「試釉」；扣除庫存為選填。
+    </div>
+    <div class="fe">
+      <button class="btn" id="t-cancel">取消</button>
+      <button class="btn bsg" id="t-save-only">只記錄（不扣庫存）</button>
+      <button class="btn bcl" id="t-save-deduct">記錄並扣庫存</button>
+    </div>
+  </div>`);
+
+  // 模式切換
+  document.getElementById('tm-base').onclick=()=>{G.TS.mode='base';syncRows();rTestModal();};
+  document.getElementById('tm-free').onclick=()=>{G.TS.mode='free';G.TS.baseRid='';syncRows();rTestModal();};
+
+  // 基底配方選擇
+  const bsel=document.getElementById('t-base-sel');
+  if(bsel){
+    bsel.onchange=function(){
+      G.TS.baseRid=this.value;
+      if(this.value){
+        const rec=S.recipes.find(r=>r.id===this.value);
+        if(rec){
+          // 用配方原料預填，但克數清空讓用戶自己填
+          G.TS.rows=rec.ingredients.map(ing=>({mid:ing.materialId,g:''}));
+        }
+      } else {
+        G.TS.rows=[{mid:'',g:''}];
+      }
+      rTestModal();
+    };
+  }
+
+  // 原料行
+  rows.forEach((_,i)=>{
+    const sel=document.getElementById('tm-'+i);
+    const inp=document.getElementById('tg-'+i);
+    const rmb=document.getElementById('trm-'+i);
+    if(sel)sel.onchange=function(){syncRows();G.TS.rows[i].mid=this.value;};
+    if(inp)inp.oninput=function(){syncRows();G.TS.rows[i].g=this.value;};
+    if(rmb)rmb.onclick=()=>{syncRows();G.TS.rows.splice(i,1);if(!G.TS.rows.length)G.TS.rows=[{mid:'',g:''}];rTestModal();};
+  });
+
+  document.getElementById('t-add-row').onclick=()=>{syncRows();G.TS.rows.push({mid:'',g:''});rTestModal();};
+  document.getElementById('t-name').oninput=function(){G.TS.name=this.value;};
+  document.getElementById('t-user').oninput=function(){G.TS.user=this.value;};
+  document.getElementById('t-note').oninput=function(){G.TS.note=this.value;};
+  document.getElementById('t-cancel').onclick=cModal;
+  document.getElementById('t-save-only').onclick=()=>doTest(false);
+  document.getElementById('t-save-deduct').onclick=()=>doTest(true);
+}
+
+function syncRows(){
+  // 把目前 DOM 值同步回 G.TS.rows
+  const rows=G.TS.rows;
+  rows.forEach((_,i)=>{
+    const sel=document.getElementById('tm-'+i);
+    const inp=document.getElementById('tg-'+i);
+    if(sel)rows[i].mid=sel.value;
+    if(inp)rows[i].g=inp.value;
+  });
+  const nameEl=document.getElementById('t-name');if(nameEl)G.TS.name=nameEl.value;
+  const userEl=document.getElementById('t-user');if(userEl)G.TS.user=userEl.value;
+  const noteEl=document.getElementById('t-note');if(noteEl)G.TS.note=noteEl.value;
+}
+
+function doTest(deduct){
+  syncRows();
+  const TS=G.TS,S=G.S;
+  const validRows=TS.rows.filter(r=>r.mid&&parseFloat(r.g)>0);
+  if(!validRows.length){alert('請至少填入一種原料和克數');return;}
+  const totalG=validRows.reduce((a,r)=>a+parseFloat(r.g),0);
+  const bd=validRows.map(r=>{
+    const g=parseFloat(r.g);
+    if(deduct){const mat=S.materials.find(m=>m.id===r.mid);if(mat&&mat.tracked)mat.qty=Math.round((mat.qty-g)*10)/10;}
+    return{materialId:r.mid,grams:g};
+  });
+  const baseRec=TS.baseRid?S.recipes.find(r=>r.id===TS.baseRid):null;
+  const autoName=TS.baseRid?(TS.baseRid+' 試釉'):'自由試釉';
+  const recName=TS.name||autoName;
+  S.log.unshift({
+    id:'l'+Date.now(),
+    date:new Date().toISOString().slice(0,10),
+    type:'test',
+    recipeId:TS.baseRid||'TEST',
+    recipeName:recName,
+    totalGrams:Math.round(totalG*10)/10,
+    user:TS.user,
+    note:TS.note,
+    breakdown:bd,
+    isTest:true,
+    deducted:deduct,
+    baseRecipe:baseRec?baseRec.name:null
+  });
+  cModal();
+  G.US.user=TS.user; // 保留操作者名字
+  save();
+  toast(deduct?'試釉記錄完成，庫存已扣除':'試釉記錄完成');
 }
 
 function rPending(){
@@ -668,7 +821,7 @@ function rHist(){
   document.getElementById('t-history').innerHTML=`
     <div class="lbl">使用記錄 ${sorted.length} 筆</div>
     ${sorted.length?sorted.map(l=>`<div class="card csm"><div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="rid">${l.recipeId}</span><span style="font-size:14px;font-weight:500">${l.recipeName}</span><span class="bdg bne">${l.totalGrams}g</span>${l.user?`<span style="font-size:12px;color:var(--ink3)">${l.user}</span>`:''}</div>
+      <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="rid">${l.isTest?'試釉':l.recipeId}</span><span style="font-size:14px;font-weight:500">${l.recipeName}</span><span class="bdg bne">${l.totalGrams}g</span>${l.isTest?`<span class="bdg" style="background:#f0e8ff;color:#6040a0;font-size:10px">${l.deducted?'試釉·扣庫存':'試釉·未扣庫存'}</span>`:''} ${l.user?`<span style="font-size:12px;color:var(--ink3)">${l.user}</span>`:''}</div>
       ${l.note?`<div style="font-size:12px;color:var(--ink3);margin-bottom:5px">${l.note}</div>`:''}
       <div class="lt">${(l.breakdown||[]).map(b=>`<span class="ltg">${b.materialId} ${b.grams}g</span>`).join('')}</div></div>
       <span class="ld">${l.date}</span></div></div>`).join(''):'<div class="empty">尚無記錄</div>'}`;
