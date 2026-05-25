@@ -824,7 +824,7 @@ function rInv(){
       ${[
         ['all',`全部 ${S.materials.length}`],
         ['base',`基本成分 ${S.materials.filter(m=>m.category==='base').length}`],
-        ['color',`顏色調整 ${S.materials.filter(m=>m.category==='color').length}`],
+        ['color',`著色劑 ${S.materials.filter(m=>m.category==='color').length}`],
         ['trk',`追蹤中 ${S.materials.filter(m=>m.tracked).length}`],
         ['untrk',`未追蹤 ${S.materials.filter(m=>!m.tracked).length}`],
         ['low',`不足 ${S.materials.filter(m=>m.tracked&&m.qty>0&&m.qty<m.minQty).length}`],
@@ -841,7 +841,7 @@ function rInv(){
             <div style="display:flex;align-items:center;gap:7px">
               <span style="font-size:14px">${m.name}</span>
               ${s!=='un'?`<span class="bdg ${bmap[s]}" style="font-size:10px">${lmap[s]}</span>`:''}
-              <span style="font-size:10px;padding:2px 7px;border-radius:100px;background:${m.category==='color'?'#fdf0e8':'#eaf0e8'};color:${m.category==='color'?'#b8680b':'#5a7a5a'}">${m.category==='color'?'顏色調整':'基本成分'}</span>
+              <span style="font-size:10px;padding:2px 7px;border-radius:100px;background:${m.category==='color'?'#fdf0e8':'#eaf0e8'};color:${m.category==='color'?'#b8680b':'#5a7a5a'}">${m.category==='color'?'著色劑':'基本成分'}</span>
             </div>
             ${m.tracked?`<div style="display:flex;align-items:center;gap:8px;margin-top:3px">
               <span style="font-family:'DM Mono',monospace;font-size:12px"><strong>${m.qty}g</strong> <span style="color:var(--ink3)">/ ${m.minQty}g</span></span>
@@ -1037,7 +1037,7 @@ function oAddMat(){
     <div class="fld"><label>名稱</label><input id="mn"></div>
     <div class="g2"><div class="fld"><label>目前庫存 (g)</label><input id="mq" type="number" value="0"></div><div class="fld"><label>最低警示 (g)</label><input id="mm" type="number" value="200"></div></div>
     <div class="fld"><label>庫存追蹤</label><select id="mtr"><option value="false">未追蹤</option><option value="true">追蹤中</option></select></div>
-    <div class="fld"><label>分類</label><select id="mcat"><option value="base">基本成分</option><option value="color">顏色調整</option></select></div>
+    <div class="fld"><label>分類</label><select id="mcat"><option value="base">基本成分</option><option value="color">著色劑</option></select></div>
     <div class="fld"><label>備註</label><input id="mno" placeholder="選填"></div>
     <div class="fe"><button class="btn" id="amc">取消</button><button class="btn bcl" id="ams">儲存</button></div>
   </div>`);
@@ -1057,7 +1057,7 @@ function oEditMat(id){
     <div class="fld"><label>名稱</label><input id="mn" value="${m.name}"></div>
     <div class="g2"><div class="fld"><label>庫存 (g)</label><input id="mq" type="number" value="${m.qty}"></div><div class="fld"><label>最低警示 (g)</label><input id="mm" type="number" value="${m.minQty}"></div></div>
     <div class="fld"><label>庫存追蹤</label><select id="mtr"><option value="false"${!m.tracked?' selected':''}>未追蹤</option><option value="true"${m.tracked?' selected':''}>追蹤中</option></select></div>
-    <div class="fld"><label>分類</label><select id="mcat"><option value="base"${(m.category||'base')==='base'?' selected':''}>基本成分</option><option value="color"${m.category==='color'?' selected':''}>顏色調整</option></select></div>
+    <div class="fld"><label>分類</label><select id="mcat"><option value="base"${(m.category||'base')==='base'?' selected':''}>基本成分</option><option value="color"${m.category==='color'?' selected':''}>著色劑</option></select></div>
     <div class="fld"><label>備註</label><input id="mno" value="${m.note||''}"></div>
     <div class="fe"><button class="btn" id="emc">取消</button><button class="btn bcl" id="ems">儲存</button></div>
   </div>`);
