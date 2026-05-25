@@ -186,10 +186,10 @@ label{font-size:12px;color:var(--ink3);display:block;margin-bottom:5px}
   </div>
   <div class="nav">
     <button class="nb on" id="nb-use">調配釉藥</button>
-    <button class="nb" id="nb-dashboard">總覽</button>
     <button class="nb" id="nb-inventory">原料庫存</button>
-    <button class="nb" id="nb-recipes">配方</button>
     <button class="nb" id="nb-history">記錄</button>
+    <button class="nb" id="nb-recipes">配方</button>
+    <button class="nb" id="nb-dashboard">總覽</button>
   </div>
   <div id="t-use" class="tab on"><div class="loading">載入中…</div></div>
   <div id="t-dashboard" class="tab"></div>
@@ -253,7 +253,7 @@ const I={
   tr:`<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>`,
 };
 
-const TABS=['use','dashboard','inventory','recipes','history'];
+const TABS=['use','inventory','history','recipes','dashboard'];
 const G={
   S:{materials:[],recipes:[],log:[],pending:[]},
   US:{rid:'',g:3000,user:'',note:'',ck:{}},
