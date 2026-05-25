@@ -422,22 +422,15 @@ function rUse(){
   const S=G.S,US=G.US;
 
   // pending banners
-  const pendHTML=S.pending.length?`<div style="margin-bottom:1rem">
-    ${S.pending.map(p=>`<div class="upc">
-      <div style="flex:1;min-width:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <span class="rid">${p.recipeId}</span>
-        <span style="font-size:13px;font-weight:500;color:var(--amber)">${p.recipeName}</span>
-        ${p.missing.map(m=>`<span class="mt">缺 ${m.materialId}</span>`).join('')}
-      </div>
-      <button class="btn bsm bdk" data-act="pgo" data-pid="${p.id}" style="flex-shrink:0">繼續</button>
-    </div>`).join('')}
-  </div>`:'';
+  const pendHTML=''; // pending moved to sub-tab
 
   // sub-tab nav
-  const subNav=`<div style="display:flex;gap:6px;margin-bottom:1.25rem;border-bottom:1px solid var(--line2);padding-bottom:0">
+  const pendCount=S.pending.length;
+  const subNav=`<div style="display:flex;gap:0;margin-bottom:1.25rem;border-bottom:1px solid var(--line2);padding-bottom:0">
     <button class="stab${tab==='recipe'?' son':''}" id="st-recipe">配方調配</button>
     <button class="stab${tab==='base'?' son':''}" id="st-base">基底試釉</button>
     <button class="stab${tab==='free'?' son':''}" id="st-free">自由調配</button>
+    <button class="stab${tab==='pend'?' son':''}" id="st-pend">待補料${pendCount?` <span style="background:var(--clay);color:#fff;border-radius:100px;font-size:10px;padding:1px 6px;font-weight:500">${pendCount}</span>`:''}</button>
   </div>`;
 
   let body='';
@@ -534,17 +527,39 @@ function rUse(){
         <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--ink3);text-align:right">${row.base}g</span>
         <input id="tsv-${i}" type="number" value="${row.g!==''?row.g:row.base}" style="height:36px;font-size:13px;text-align:right" placeholder="${row.base}">
       </div>`).join('')}
-      <div class="fld" style="margin-top:12px"><label>試釉名稱（選填）</label><input id="ts-name" value="${TS.name}" placeholder="例：X0Y2 增鋅版"></div>
-      <div class="fe">
-        <button class="btn bsg" id="ts-rec">記錄（不扣庫存）</button>
+      <div class="fe" style="margin-top:14px">
+        <input id="ts-name" value="${TS.name}" placeholder="試釉名稱（選填）" style="flex:1;height:38px;border-radius:var(--r);font-size:13px;border:1px solid var(--line);padding:0 12px;color:var(--ink)">
+        <button class="btn bsg" id="ts-rec">記錄</button>
         <button class="btn bcl" id="ts-ded">記錄並扣庫存</button>
       </div>`:'<div class="empty" style="padding:2rem">請先選擇基底配方</div>'}`;
+  } else if(tab==='pend'){
+    // 待補料
+    body=S.pending.length?S.pending.map(p=>`<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span class="rid">${p.recipeId}</span>
+            <span style="font-size:15px;font-weight:500">${p.recipeName}</span>
+            <span class="bdg bne">${p.totalGrams}g</span>
+          </div>
+          <div style="font-size:12px;color:var(--ink3)">${p.date}</div>
+        </div>
+        <button class="btn bsm bdan" data-act="del" data-pid="${p.id}">移除</button>
+      </div>
+      ${p.missing.length?`<div class="lbl" style="margin-bottom:6px">缺料明細</div>
+        ${p.missing.map(m=>`<div class="mr ins" style="cursor:default;margin-bottom:4px">
+          <span class="mn">${m.materialId}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--red);margin-left:auto">需 ${m.need}g · 有 ${m.have}g</span>
+        </div>`).join('')}`:''}
+      <div class="fe" style="margin-top:8px">
+        <button class="btn bsm bdk" data-act="go" data-pid="${p.id}">繼續調配 →</button>
+      </div>
+    </div>`).join(''):'<div class="empty" style="padding:3rem">目前沒有待補料</div>';
   } else {
     // 自由調配
-    if(!G.FR)G.FR={rows:[{mid:'',g:''}],name:''};
+    if(!G.FR)G.FR={rows:[{mid:'',g:''}],name:'',note:''};
     const FR=G.FR,mats=S.materials;
-    body=`<div class="fld"><label>試釉名稱（選填）</label><input id="fr-name" value="${FR.name}" placeholder="例：自訂青瓷 #1"></div>
-      <div style="display:grid;grid-template-columns:1fr 90px;gap:6px;margin-bottom:6px">
+    body=`<div style="display:grid;grid-template-columns:1fr 90px;gap:6px;margin-bottom:6px">
         <span style="font-size:10px;color:var(--ink3)">原料</span>
         <span style="font-size:10px;color:var(--ink3);text-align:right">克數 g</span>
       </div>
@@ -553,18 +568,18 @@ function rUse(){
         <input id="frv-${i}" type="number" value="${row.g||''}" style="height:36px;font-size:13px;text-align:right" placeholder="克">
         <button class="ib dn" id="frdel-${i}">${I.tr}</button>
       </div>`).join('')}
-      <button class="btn bsm" id="fr-add" style="margin-bottom:14px">+ 新增原料</button>
-      <div class="fld"><label>備註</label><input id="fr-note" value="${FR.note||''}" placeholder="調整原因、觀察…"></div>
-      <div class="fe">
-        <button class="btn bsg" id="fr-rec">記錄（不扣庫存）</button>
+      <button class="btn bsm" id="fr-add" style="margin:4px 0 14px">+ 新增原料</button>
+      <div class="fe" style="margin-top:4px;flex-wrap:wrap;gap:6px">
+        <input id="fr-name" value="${FR.name||''}" placeholder="試釉名稱（選填）" style="flex:1;min-width:120px;height:38px;border-radius:var(--r);font-size:13px;border:1px solid var(--line);padding:0 12px;color:var(--ink)">
+        <button class="btn bsg" id="fr-rec">記錄</button>
         <button class="btn bcl" id="fr-ded">記錄並扣庫存</button>
       </div>`;
   }
 
-  document.getElementById('t-use').innerHTML=pendHTML+subNav+body;
+  document.getElementById('t-use').innerHTML=subNav+body;
 
   // 子頁籤切換
-  ['recipe','base','free'].forEach(t=>{
+  ['recipe','base','free','pend'].forEach(t=>{
     const b=document.getElementById('st-'+t);
     if(b)b.onclick=()=>{G.USE_TAB=t;rUse();};
   });
@@ -631,11 +646,10 @@ function rUse(){
     const tsRecBtn=document.getElementById('ts-rec'),tsDedBtn=document.getElementById('ts-ded');
     if(tsRecBtn)tsRecBtn.onclick=()=>{syncTS();doBaseTest(false);};
     if(tsDedBtn)tsDedBtn.onclick=()=>{syncTS();doBaseTest(true);};
-    const tsNameEl=document.getElementById('ts-name');
-    if(tsNameEl)tsNameEl.oninput=function(){TS.name=this.value;};
+    const tsNameEl=document.getElementById('ts-name');if(tsNameEl)tsNameEl.oninput=function(){TS.name=this.value;};
   } else {
     const FR=G.FR,mats=S.materials;
-    const syncFR=()=>{FR.rows.forEach((_,i)=>{const ms=document.getElementById('frm-'+i);const vl=document.getElementById('frv-'+i);if(ms)FR.rows[i].mid=ms.value;if(vl)FR.rows[i].g=vl.value;});const n=document.getElementById('fr-name');if(n)FR.name=n.value;const nt=document.getElementById('fr-note');if(nt)FR.note=nt.value;};
+    const syncFR=()=>{FR.rows.forEach((_,i)=>{const ms=document.getElementById('frm-'+i);const vl=document.getElementById('frv-'+i);if(ms)FR.rows[i].mid=ms.value;if(vl)FR.rows[i].g=vl.value;});const n=document.getElementById('fr-name');if(n)FR.name=n.value;};
     FR.rows.forEach((_,i)=>{
       const ms=document.getElementById('frm-'+i);const vl=document.getElementById('frv-'+i);const dl=document.getElementById('frdel-'+i);
       if(ms)ms.onchange=function(){FR.rows[i].mid=this.value;};
@@ -644,7 +658,6 @@ function rUse(){
     });
     const addBtn=document.getElementById('fr-add');if(addBtn)addBtn.onclick=()=>{syncFR();FR.rows.push({mid:'',g:''});rUse();};
     const frNameEl=document.getElementById('fr-name');if(frNameEl)frNameEl.oninput=function(){FR.name=this.value;};
-    const frNoteEl=document.getElementById('fr-note');if(frNoteEl)frNoteEl.oninput=function(){FR.note=this.value;};
     const frRecBtn=document.getElementById('fr-rec'),frDedBtn=document.getElementById('fr-ded');
     if(frRecBtn)frRecBtn.onclick=()=>{syncFR();doFreeTest(false);};
     if(frDedBtn)frDedBtn.onclick=()=>{syncFR();doFreeTest(true);};
